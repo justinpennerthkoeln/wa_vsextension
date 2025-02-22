@@ -1,0 +1,29 @@
+h2 {
+    margin-top: var(--space-lg);
+    font-size: var(--size-xl);
+}
+
+h3 {
+    font-size: var(--size-md);
+}
+
+#audit-sidebar-content {
+    margin-top: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+#audit-results-sidebar > * {
+    margin-bottom: var(--space-md);
+}
+
+.audit-result {
+    box-shadow: var(--border-shadow);
+    border-radius: var(--border-radius);
+    padding: var(--space-md);
+    overflow: hidden;
+}
+
+.warning {
+    color: var(--color-warning);
+}

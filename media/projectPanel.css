@@ -1,0 +1,111 @@
+#projects-panel {
+  width: 100%;
+}
+
+h2 {
+  font-size: var(--size-xxl);
+}
+
+h3 {
+  font-size: var(--size-xl);
+}
+
+h4 {
+  font-size: var(--size-md);
+}
+
+button {
+  max-height: fit-content;
+  max-width: fit-content;
+  border-radius: var(--border-radius);
+  padding: var(--space-xxs) var(--space-md);
+  color: var(--color-text-light);
+}
+
+#flag {
+  background-color: var(--color-success);
+  color: var(--color-text);
+  margin: 0 var(--space-sm);
+  margin-top: var(--space-xxs);
+}
+
+#delete-btn {
+  background-color: var(--color-danger);
+  color: var(--color-text);
+  margin: 0 var(--space-sm);
+  margin-top: var(--space-xxs);
+}
+
+/************************************************************ 
+ Project Panel Header */
+
+#projects-panel-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#projects-panel-header div {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+/************************************************************ 
+ Project Panel Content */
+
+#projects-panel-content {
+  display: flex;
+  gap: var(--space-md);
+  width: 100%;
+}
+
+#projects-panel-content>* {
+  margin-top: var(--space-xl);
+}
+
+.container {
+  flex: 1;
+  min-width: 0;
+  box-shadow: var(--border-shadow);
+  padding: var(--space-md);
+}
+
+/************************************************************ 
+ Issue Panel Header */
+
+.issue {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/************************************************************ 
+ Issue Panel Content */
+
+.user {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: var(--space-sm);
+}
+
+.user button {
+  background-color: var(--color-warning);
+}
+
+/************************************************************ 
+ Add User Form */
+
+#add-user {
+  margin-top: var(--space-md);
+}
+
+#add-user-form {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-md);
+}

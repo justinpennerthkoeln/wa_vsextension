@@ -1,0 +1,44 @@
+h2 {
+    margin-top: var(--space-lg);
+    font-size: var(--size-xl);
+}
+
+h3 {
+    font-size: var(--size-md);
+}
+
+#projects-sidebar-content {
+    margin-top: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.project-sidebar-item {
+    box-shadow: var(--border-shadow);
+    border-radius: var(--border-radius);
+    padding: var(--space-md);
+    overflow: hidden;
+    margin-top: var(--space-md);
+}
+
+.project-sidebar-item div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.project-sidebar-item div button {
+    width: 30%;
+}
+
+.project-sidebar-item div button svg {
+    margin-top: var(--space-xxxs);
+}
+
+.warning {
+    color: var(--color-warning);
+}
+
+.success {
+    color: var(--color-success);
+}
