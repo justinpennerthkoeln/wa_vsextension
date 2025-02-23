@@ -93,8 +93,7 @@ const AuditSidebar = () => {
               
               { userProjects &&
                 <form action="" onSubmit={handleAddIssue} >
-                  <select name="" id="add-issue">
-                    <option value="">Select a project</option>
+                  <select name="" id="add-issue" size={userProjects.length}>
                     {
                       userProjects.map((project: Project, index: number) => (
                         <option key={index} value={project.uuid}>{project.name}</option>
@@ -113,7 +112,7 @@ const AuditSidebar = () => {
                     <pre>
                       {match.content}
                     </pre>
-                    <p>In Line: {match.lineIndex}</p>
+                    <p>Line Index: {match.lineIndex? match.lineIndex : "Could not be found"}</p>
                   </div>
                 ))
               }

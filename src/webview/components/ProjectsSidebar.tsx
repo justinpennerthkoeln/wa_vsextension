@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from './Store';
 import { vscode } from '../utilities/vscode';
+import { buildDateFromString } from '../../utilities/buildDateFromString';
 
 const ProjectsSidebar = () => {
   const { userProjects, userToken, actions } = useApp();
@@ -99,7 +100,7 @@ const ProjectsSidebar = () => {
                 <div key={project.id} className="project-sidebar-item">
                   <h3>{project.name}</h3>
                   <div>
-                    <p>{project.inserted_at}</p>
+                    <p>{buildDateFromString(project.inserted_at)}</p>
                     <button onClick={() => {
                       vscode.postMessage({ type: 'set-active-project', activeProject: project.uuid})
                       vscode.postMessage({ type: 'open-project' });

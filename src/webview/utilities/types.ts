@@ -24,12 +24,17 @@ export type Project = {
 export type Issue = {
     id: number,
     inserted_at: string,
+    filename: string,
     matches: Array<Match>,
     matches_count: number,
     project_id: number,
     status: string,
     updated_at: string,
     user_id: number,
+    user: {
+        uuid: string,
+        username: string
+    },
     uuid: string,
 }
 

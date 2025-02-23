@@ -2,7 +2,8 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vsco
 import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
 
-import { getProject, addUser } from "../utilities/project";
+import { getProject, addUser, deleteUser, deleteProject } from "../utilities/project";
+import { getUsers } from "../utilities/user";
 
 export class ProjectsPanel {
   public static currentPanel: ProjectsPanel | undefined;
@@ -37,7 +38,7 @@ export class ProjectsPanel {
         // Panel view type
         "showHelloWorld",
         // Panel title
-        "Hello World",
+        "Project",
         // The editor column the panel should be displayed in
         ViewColumn.One,
         // Extra panel configurations
@@ -145,8 +146,36 @@ export class ProjectsPanel {
               },
             });
             return;
+          case "set-active-issue":
+            await this._extensionContext.globalState.update("activeIssue", value.activeProject);
+            return;
+          case "open-issue":
+            vscode.commands.executeCommand("accessibility.closeIssuePanel");
+            vscode.commands.executeCommand("accessibility.openIssuePanel");
+            return;
+          case "get-users":
+            var users = await getUsers(value.filter);
+            webview.postMessage({
+              type: "get-users",
+              value: users,
+            });
+            return;
           case "delete-user":
-            // Delete user from project
+            await deleteUser(value.member_uuid);
+            return;
+          case "delete-project":
+            const isDeleted = await deleteProject(value.project_uuid);
+            if (isDeleted) {
+              vscode.commands.executeCommand("accessibility.closeIssuePanel");
+              vscode.commands.executeCommand("accessibility.closeProjectPanel");
+              return;
+            }
+            webview.postMessage({
+              type: "delete-project",
+              value: {
+                success: false,
+              },
+            });
             return;
         }
       },

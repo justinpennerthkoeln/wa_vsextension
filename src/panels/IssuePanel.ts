@@ -33,7 +33,7 @@ export class IssuePanel {
         // Panel view type
         "showHelloWorld",
         // Panel title
-        "Hello World",
+        "Issue",
         // The editor column the panel should be displayed in
         ViewColumn.One,
         // Extra panel configurations

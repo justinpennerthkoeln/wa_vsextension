@@ -50,6 +50,7 @@ export class ProjectsSidebarProvider implements vscode.WebviewViewProvider {
           break;
         }
         case "open-project": {
+          vscode.commands.executeCommand("accessibility.closeProjectPanel");
           vscode.commands.executeCommand("accessibility.openProjectPanel");
         }
       }

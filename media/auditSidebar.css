@@ -27,3 +27,20 @@ h3 {
 .warning {
     color: var(--color-warning);
 }
+
+#add-issue {
+    width: 100%;
+    background-color: var(----vscode-editor-background);
+    color: var(--color-text-light);
+    border: none;
+    box-shadow: var(--border-shadow);
+    padding: var(--space-sm);
+    border-radius: var(--border-radius);
+}
+
+#add-issue option {
+    background-color: var(----vscode-editor-background);
+    color: var(--color-text-light);
+    padding: var(--space-sm);
+    border-radius: var(--border-radius);
+}

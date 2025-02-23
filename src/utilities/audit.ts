@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { AuditResults } from '../webview/utilities/types';
 
 const auditDiagnosticCollection = vscode.languages.createDiagnosticCollection('poc-ba');
 
@@ -21,7 +22,7 @@ function pocAudit(filecontent: string): Promise<any> {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			api_key: "5a3e288d-8a25-450f-9e7c-77e5e59d2177",
+			api_key: "1e05121b-247f-485b-ab2e-94757a11ca97",
 			filecontent: filecontent
 		})
 	})
@@ -34,26 +35,28 @@ function pocAudit(filecontent: string): Promise<any> {
 	return test;
 }
 
-function markIssueLines(data: any, document: vscode.TextDocument, auditDiagnosticCollection: vscode.DiagnosticCollection) {
+function markIssueLines(data: AuditResults, document: vscode.TextDocument, auditDiagnosticCollection: vscode.DiagnosticCollection) {
 	const matches = data.matches;
 	const diagnostics: vscode.Diagnostic[] = [];
 
 	// Marking the lines with the issues
 	for (const match of matches) {
-		const line = match.lineIndex - 1;
-		const range = document.lineAt(line).range;
-		const linesCount = match.content.split(/\r\n|\r|\n/).length;
-
-		if(linesCount > 1) {
-			const startLine = match.content.split("\n")[0].replace(/ data-audit-error="[^"]*?"/g, "");
-			const start = new vscode.Position(line, (range.end.character - (startLine.length - 1)));
-			const end = new vscode.Position(line, range.end.character);
-			const diagnostic = new vscode.Diagnostic(new vscode.Range(start, end), match.heading, vscode.DiagnosticSeverity.Warning);
-			diagnostics.push(diagnostic);
-		} else {
-			const start = new vscode.Position(line, (range.end.character - ((match.content.replace(/ data-audit-error="[^"]*?"/g, "")).length)));
-			const diagnostic = new vscode.Diagnostic(new vscode.Range(start, range.end), match.heading, vscode.DiagnosticSeverity.Warning);
-			diagnostics.push(diagnostic);
+		if(match.lineIndex) {
+			const line = match.lineIndex - 1;
+			const range = document.lineAt(line).range;
+			const linesCount = match.content.split(/\r\n|\r|\n/).length;
+	
+			if(linesCount > 1) {
+				const startLine = match.content.split("\n")[0].replace(/ data-audit-error="[^"]*?"/g, "");
+				const start = new vscode.Position(line, (range.end.character - (startLine.length - 1)));
+				const end = new vscode.Position(line, range.end.character);
+				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, end), match.heading, vscode.DiagnosticSeverity.Warning);
+				diagnostics.push(diagnostic);
+			} else {
+				const start = new vscode.Position(line, (range.end.character - ((match.content.replace(/ data-audit-error="[^"]*?"/g, "")).length)));
+				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, range.end), match.heading, vscode.DiagnosticSeverity.Warning);
+				diagnostics.push(diagnostic);
+			}
 		}
 	}
 	auditDiagnosticCollection.set(document.uri, diagnostics);

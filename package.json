@@ -20,6 +20,14 @@
         "title": "Issue Panel"
       },
       {
+        "command": "accessibility.closeProjectPanel",
+        "title": "Close Project Panel"
+      },
+      {
+        "command": "accessibility.closeIssuePanel",
+        "title": "close Issue Panel"
+      },
+      {
         "command": "accessibility.notLoggedIn",
         "title": "Please log in"
       }

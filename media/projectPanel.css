@@ -16,24 +16,56 @@ h4 {
 
 button {
   max-height: fit-content;
-  max-width: fit-content;
+  max-width: 20%;
   border-radius: var(--border-radius);
   padding: var(--space-xxs) var(--space-md);
   color: var(--color-text-light);
 }
 
-#flag {
+/* #flag {
+  max-width: fit-content;
   background-color: var(--color-success);
+  color: var(--color-text);
+  margin: 0 var(--space-sm);
+  margin-top: var(--space-xxs);
+} */
+
+#delete-btn {
+  max-height: fit-content;
+  max-width: fit-content;
+  background-color: var(--color-danger);
   color: var(--color-text);
   margin: 0 var(--space-sm);
   margin-top: var(--space-xxs);
 }
 
-#delete-btn {
-  background-color: var(--color-danger);
-  color: var(--color-text);
+.warning {
+  margin-top: var(--space-sm);
+  color: var(--color-warning);
+}
+
+.owner-flag {
+  max-width: fit-content;
+  background-color: var(--color-success);
+  color: var(--color-text-light);
   margin: 0 var(--space-sm);
   margin-top: var(--space-xxs);
+}
+
+.owner-flag:hover {
+  background-color: var(--color-success-hover);
+}
+
+.member-flag {
+  max-width: fit-content;
+  background-color: var(--color-warning);
+  color: var(--color-text-light);
+  margin: 0 var(--space-sm);
+  margin-top: var(--space-xxs);
+}
+
+.member-flag:hover {
+  background-color: var(--color-warning-hover);
 }
 
 /************************************************************ 
@@ -42,14 +74,17 @@ button {
 #projects-panel-header {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 #projects-panel-header div {
   display: flex;
   flex-direction: row;
-  justify-content: left;
   align-items: center;
+}
+
+#projects-panel-header div button:last-child {
+  margin-left: auto;
+  margin-right: var(--space-md);
 }
 
 /************************************************************ 
@@ -59,6 +94,18 @@ button {
   display: flex;
   gap: var(--space-md);
   width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  #projects-panel-content {
+    flex-direction: column;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #projects-panel-content {
+    flex-direction: row;
+  }
 }
 
 #projects-panel-content>* {
@@ -82,6 +129,18 @@ button {
   align-items: center;
 }
 
+.issue > * {
+  margin-top: var(--space-sm);
+}
+
+.issue button {
+  height: var(--size-xl);
+}
+
+.issue button:last-child {
+  float: right;
+}
+
 /************************************************************ 
  Issue Panel Content */
 
@@ -97,6 +156,10 @@ button {
   background-color: var(--color-warning);
 }
 
+.user button:hover {
+  background-color: var(--color-warning-hover);
+}
+
 /************************************************************ 
  Add User Form */
 
@@ -106,6 +169,50 @@ button {
 
 #add-user-form {
   display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+#add-user-form #input-container {
+  display: flex;
   flex-direction: row;
   gap: var(--space-md);
+}
+
+#add-user-form select {
+  width: 100%;
+  background-color: var(----vscode-editor-background);
+  color: var(--color-text-light);
+  border: none;
+  box-shadow: var(--border-shadow);
+  padding: var(--space-sm);
+  border-radius: var(--border-radius);
+}
+
+#add-user-form select option {
+  background-color: var(----vscode-editor-background);
+  color: var(--color-text-light);
+  padding: var(--space-sm);
+  border-radius: var(--border-radius);
+}
+
+.loading-circle {
+  margin-top: var(--space-md);
+  border: 4px solid var(--color-background);
+  border-top: 4px solid var(--color-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  align-self: center;
+  justify-self: center;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

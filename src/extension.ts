@@ -10,8 +10,15 @@ export function activate(context: ExtensionContext) {
   const showProjectsPanel = commands.registerCommand("accessibility.openProjectPanel", () => {
     ProjectsPanel.render(context.extensionUri, context);
   });
+  const closeProjectsPanel = commands.registerCommand("accessibility.closeProjectPanel", () => {
+    ProjectsPanel.currentPanel?.dispose();
+  });
+
   const showIssuePanel = commands.registerCommand("accessibility.openIssuePanel", () => {
     IssuePanel.render(context.extensionUri);
+  });
+  const closeIssuePanel = commands.registerCommand("accessibility.closeIssuePanel", () => {
+    IssuePanel.currentPanel?.dispose();
   });
 
   const auditSidebarProvider = new AuditSidebarProvider(context.extensionUri);
@@ -27,4 +34,6 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(showProjectsPanel);
   context.subscriptions.push(showIssuePanel);
+  context.subscriptions.push(closeProjectsPanel);
+  context.subscriptions.push(closeIssuePanel);
 }
