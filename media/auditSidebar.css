@@ -25,7 +25,13 @@ h3 {
 }
 
 .warning {
+    margin-top: var(--space-sm);
     color: var(--color-warning);
+}
+
+.success {
+    margin-top: var(--space-sm);
+    color: var(--color-success);
 }
 
 #add-issue {
@@ -38,7 +44,7 @@ h3 {
     border-radius: var(--border-radius);
 }
 
-#add-issue option {
+#add-issue > * {
     background-color: var(----vscode-editor-background);
     color: var(--color-text-light);
     padding: var(--space-sm);

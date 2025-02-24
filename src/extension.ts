@@ -22,7 +22,7 @@ export function activate(context: ExtensionContext) {
     IssuePanel.currentPanel?.dispose();
   });
 
-  const auditSidebarProvider = new AuditSidebarProvider(context.extensionUri);
+  const auditSidebarProvider = new AuditSidebarProvider(context.extensionUri, context);
   const projectsSidebarProvider = new ProjectsSidebarProvider(context.extensionUri, context);
   const settingsSidebarProvider = new SettingsSidebarProvider(context.extensionUri, context);
 

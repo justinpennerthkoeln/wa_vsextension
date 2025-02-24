@@ -11,7 +11,9 @@ function doAudit() {
             markIssueLines(data, document, auditDiagnosticCollection);
             return data;
         })
-    }
+    } else {
+		return {success: false};
+	}
 }
 
 function pocAudit(filecontent: string): Promise<any> {
@@ -39,7 +41,6 @@ function markIssueLines(data: AuditResults, document: vscode.TextDocument, audit
 	const matches = data.matches;
 	const diagnostics: vscode.Diagnostic[] = [];
 
-	// Marking the lines with the issues
 	for (const match of matches) {
 		if(match.lineIndex) {
 			const line = match.lineIndex - 1;

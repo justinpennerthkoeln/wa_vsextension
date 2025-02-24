@@ -2,13 +2,14 @@ import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import doAudit from "../utilities/audit";
 import { getProjects, addIssue } from "../utilities/project";
-import { login } from "../utilities/user";
+import { onRefreshProjects } from '../utilities/events';
+import { User } from "../webview/utilities/types";
 
 export class AuditSidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(private readonly _extensionUri: vscode.Uri, private readonly _extensionContext: vscode.ExtensionContext) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
     this._view = webviewView;
@@ -30,14 +31,21 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
           });
           break;
         }
-        // case "login": {
-        //   const userToken = await login();
-        //   webviewView.webview.postMessage({
-        //     type: "login",
-        //     value: userToken,
-        //   });
-        //   break;
-        // }
+        case "get-user": {
+          const user = await this._extensionContext.globalState.get("user", data.activeProject);
+          if(!user) {
+            webviewView.webview.postMessage({
+              type: "get-user",
+              value: { success: false }
+            });
+            return;
+          }
+          webviewView.webview.postMessage({
+            type: "get-user",
+            value: { success: true, user: await user.user }
+          });
+          break;
+        }
         case "get-projects": {
           const projects = await getProjects(data.userToken);
           webviewView.webview.postMessage({
@@ -47,7 +55,13 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
           break;
         }
         case "add-issue": {
-          addIssue(data.value.project_uuid, data.value.userToken, data.value.auditResults);
+          const issueAdded = await addIssue(data.value.project_uuid, data.value.userToken, data.value.auditResults);
+          console.log(issueAdded);
+          webviewView.webview.postMessage({
+            type: "add-issue",
+            value: { success: issueAdded },
+          });
+          onRefreshProjects.fire();
           break;
         }
       }
@@ -64,6 +78,19 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
           vscode.window.showErrorMessage(data.value);
           break;
         }
+      }
+    });
+
+    // Listen for the custom event to refresh projects
+    onRefreshProjects.event(async () => {
+      const user: User | undefined = await (this._extensionContext.globalState.get("user") as {success: boolean, user: User}).user;
+      const userToken = user?.uuid;
+      if (userToken) {
+        const projects = await getProjects(userToken);
+        webviewView.webview.postMessage({
+          type: "get-projects",
+          value: projects,
+        });
       }
     });
   }
@@ -88,6 +115,10 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
       vscode.Uri.joinPath(this._extensionUri, "media", "auditSidebar.css")
     );
 
+    const svgUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "fairlyAccess.svg")
+    );
+
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "src", "webview", "dist", "main.js")
     );
@@ -103,6 +134,7 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${styleRootUri}" rel="stylesheet">
         <link href="${styleAuditSidebarUri}" rel="stylesheet">
+        <link rel="icon" type="image/svg" href="${svgUri}" />
         <title>Sidebar</title>
       </head>
       <body>

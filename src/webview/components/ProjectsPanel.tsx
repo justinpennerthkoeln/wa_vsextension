@@ -13,7 +13,7 @@ const ProjectsPanel = () => {
   const [deleteUserError, setDeleteUserError] = useState(false);
   const [deleteProjectPermissionError, setDeleteProjectPermissionError] = useState(false);
   const [deleteProjectServerError, setDeleteProjectServerError] = useState(false);
-  const [isUserOwner, setIsUserOwner] = useState(false);
+  const [isUserOwner, setIsUserOwner] = useState<boolean | null>(null);
 
   /**
    * Handle functions
@@ -65,7 +65,7 @@ const ProjectsPanel = () => {
     setDeleteProjectPermissionError(false);
     vscode.postMessage({ type: 'delete-project', value: { project_uuid: activeProject?.uuid } });
   };
-
+ 
   /**
    * message event listener
    */
@@ -77,31 +77,35 @@ const ProjectsPanel = () => {
       if (message.type === 'get-project') {
         if (message.value.success) {
           actions.setActiveProject(message.value.project)
-          const user = message.value.project.members.find((member: Member) => member.uuid === message.value.user_uuid);
-          if(user.role === "owner") {
-            setIsUserOwner(true);
-          }
-        } 
+          vscode.postMessage({ type: 'get-user' });
+        }
         return;
       }
       if (message.type === 'delete-user') {
         if (message.value.success) {
           actions.setActiveProject(message.value.project)
         }
+        return;
       }
       if(message.type === "add-user") {
         if(message.value.success) {
           actions.setActiveProject(message.value.project)
         }
+        return;
       }
       if(message.type === "get-users") {
         setUsers(message.value);
+        return;
       }
       if(message.type === "delete-project") {
-        if(message.value.success) {
-        } else {
+        if(!message.value.success) {
           setDeleteProjectServerError(true);
         }
+        return;
+      }
+      if(message.type === "get-user") {
+        setIsUserOwner(message.value.isUserOwner);
+        return;
       }
     };
 
@@ -118,16 +122,17 @@ const ProjectsPanel = () => {
     )
   }
 
-
   return (
     <div id="projects-panel">
       <section id="projects-panel-header">
         <div>
           <h2>{activeProject.name}</h2>
-          <Flag flag={(isUserOwner)?"owner":"member"}></Flag>
+          { isUserOwner !== null &&
+            <Flag flag={(isUserOwner)?"owner":"member"}></Flag>
+          }
           <button id="delete-btn" onClick={
             (e) => {handleProjectDelete(e);}
-          }>Delete</button>
+          } hidden={!isUserOwner}>Delete</button>
         </div>
         <p>Created: {buildDateFromString(activeProject.inserted_at)}</p>
         <p id="error-msg" hidden={!deleteProjectPermissionError} className='warning'>You aren't allowed to delete this Project</p>

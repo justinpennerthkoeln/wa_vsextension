@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import { login } from "../utilities/user";
 import { createProject, getProjects } from "../utilities/project";
+import { onRefreshProjects } from '../utilities/events';
+import { User } from "../webview/utilities/types";
 
 export class ProjectsSidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
@@ -21,14 +23,21 @@ export class ProjectsSidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        // case "login": {
-        //   const userToken = await login();
-        //   webviewView.webview.postMessage({
-        //     type: "login",
-        //     value: userToken,
-        //   });
-        //   break;
-        // }
+        case "get-user": {
+          const user = await this._extensionContext.globalState.get("user", data.activeProject);
+          if(!user) {
+            webviewView.webview.postMessage({
+              type: "get-user",
+              value: { success: false }
+            });
+            return;
+          }
+          webviewView.webview.postMessage({
+            type: "get-user",
+            value: { success: true, user: await user.user }
+          });
+          break;
+        }
         case "create-project": {
           const project = await createProject(data.value.projectName, data.value.userToken);
           webviewView.webview.postMessage({
@@ -53,6 +62,19 @@ export class ProjectsSidebarProvider implements vscode.WebviewViewProvider {
           vscode.commands.executeCommand("accessibility.closeProjectPanel");
           vscode.commands.executeCommand("accessibility.openProjectPanel");
         }
+      }
+    });
+
+    // Listen for the custom event to refresh projects
+    onRefreshProjects.event(async () => {
+      const user: User | undefined = await (this._extensionContext.globalState.get("user") as {success: boolean, user: User}).user;
+      const userToken = user?.uuid;
+      if (userToken) {
+        const projects = await getProjects(userToken);
+        webviewView.webview.postMessage({
+          type: "get-projects",
+          value: projects,
+        });
       }
     });
   }

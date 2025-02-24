@@ -36,8 +36,8 @@
       "activitybar": [
         {
           "id": "vstodo-sidebar-view",
-          "title": "VSTodo",
-          "icon": "media/checklist.svg"
+          "title": "farilyAccess",
+          "icon": "media/fairlyAccess.svg"
         }
       ]
     },
@@ -47,21 +47,21 @@
           "type": "webview",
           "id": "vstodo-sidebar",
           "name": "Analysis",
-          "icon": "media/checklist.svg",
+          "icon": "media/fairlyAccess.svg",
           "contextualTitle": "VSTodo"
         },
         {
           "type": "webview",
           "id": "vstodo-sidebar2",
           "name": "Projects",
-          "icon": "media/checklist.svg",
+          "icon": "media/fairlyAccess.svg",
           "contextualTitle": "VSTodo2"
         },
         {
           "type": "webview",
           "id": "vstodo-sidebar3",
           "name": "Settings",
-          "icon": "media/checklist.svg",
+          "icon": "media/fairlyAccess.svg",
           "contextualTitle": "VSTodo3"
         }
       ]

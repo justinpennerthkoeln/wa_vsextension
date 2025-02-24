@@ -4,6 +4,8 @@ import * as vscode from "vscode";
 
 import { getProject, addUser, deleteUser, deleteProject } from "../utilities/project";
 import { getUsers } from "../utilities/user";
+import { onRefreshProjects } from '../utilities/events';
+import { Member, Project, User } from "../webview/utilities/types";
 
 export class ProjectsPanel {
   public static currentPanel: ProjectsPanel | undefined;
@@ -28,6 +30,13 @@ export class ProjectsPanel {
     };
 
     this._setWebviewMessageListener(this._panel.webview);
+
+    // Listen for the custom event to refresh projects
+    onRefreshProjects.event(() => {
+      this._panel.webview.postMessage({
+        type: "refresh-projects",
+      });
+    });
   }
 
   public static render(extensionUri: Uri, extensionContext: vscode.ExtensionContext) {
@@ -127,17 +136,16 @@ export class ProjectsPanel {
 
         switch (type) {
           case "get-project":
-            var project = await getProject(this._extensionContext.globalState.get("activeProject") as string)
             webview.postMessage({
               type: "get-project",
               value: {
                 success: true,
-                project: project
+                project: this._extensionContext.globalState.get("activeProject")
               },
             })
             return;
           case "add-user":
-            var project = await addUser(value.project_uuid, value.user_uuid);
+            const project = await addUser(value.project_uuid, value.user_uuid);
             webview.postMessage({
               type: "add-user",
               value: {
@@ -176,6 +184,29 @@ export class ProjectsPanel {
                 success: false,
               },
             });
+            return;
+          case "get-user":
+            const user = (await this._extensionContext.globalState.get("user") as {success: boolean, user: User});
+            var active_project = await this._extensionContext.globalState.get("activeProject");
+            var state = false;
+            
+            (active_project as Project).members.forEach((member: Member) => {
+              if(member.username === user.user.username && member.role === "owner") { state = true; return;}
+            });
+            
+            if(state) {
+              webview.postMessage({
+                type: "get-user",
+                value: { isUserOwner: true},
+              });
+            }
+
+            if(state === false) {
+              webview.postMessage({
+                type: "get-user",
+                value: { isUserOwner: false},
+              });
+            }
             return;
         }
       },

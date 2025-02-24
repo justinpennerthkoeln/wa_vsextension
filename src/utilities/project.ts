@@ -91,7 +91,7 @@ export function deleteProject(projectUuid: string) {
 export function addIssue(projectUuid: string, userToken: string, auditResults: AuditResults) {
     const filename = vscode.window.activeTextEditor?.document.fileName.split('/').pop();
     if (!filename) {
-        return Promise.resolve({ success: false, message: "No file open" }); 
+        return false;
     }
 
     return fetch(`http://localhost:4000/v1/projects/${projectUuid}/add_issue`, {
@@ -106,7 +106,7 @@ export function addIssue(projectUuid: string, userToken: string, auditResults: A
         })
     }).then(response => {
         return response.json().then(data => {
-            return data;
+            return data.success;
         });
     })
 }

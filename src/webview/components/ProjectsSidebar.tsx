@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useApp } from './Store';
 import { vscode } from '../utilities/vscode';
 import { buildDateFromString } from '../../utilities/buildDateFromString';
+import LoadingCircle from './LoadingCircle';
 
 const ProjectsSidebar = () => {
   const { userProjects, userToken, actions } = useApp();
-  const [loginError, setLoginError] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [projectCreated, setProjectCreated] = useState<boolean | null>(null);
 
@@ -16,30 +16,27 @@ const ProjectsSidebar = () => {
       setProjectName('');
     }
   };
-  
 
   useEffect(() => {
-    // vscode.postMessage({ type: 'login' });
+    vscode.postMessage({ type: 'get-user' });
 
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
-      // if (message.type === 'login') {
-      //   if (message.value.success) {
-      //     actions.setUserToken(message.value);
-      //     vscode.postMessage({ type: 'get-projects', userToken: message.value.user_key });
-      //   } else {
-      //     setLoginError(true);
-      //   }
-      //   return;
-      // }
+      if (message.type === 'get-user') {
+        if (message.value.success) {
+          actions.setUserToken(message.value.user.uuid);
+          vscode.postMessage({ type: 'get-projects', userToken: message.value.user.uuid });
+          return;
+        }
+      }
       if (message.type === 'project-created') {
         if(message.value.success === false) {
           setProjectCreated(false);
           return;
         }
-
         setProjectCreated(true);
         actions.setUserProjects(message.value)
+        return;
       }
       if(message.type === 'get-projects') {
         if(message.value.length == 0) {
@@ -47,6 +44,7 @@ const ProjectsSidebar = () => {
           return;
         }
         actions.setUserProjects(message.value);
+        return;
       }
     };
 
@@ -62,11 +60,9 @@ const ProjectsSidebar = () => {
       <h2>Projects</h2>
       <p>Work with your Projects</p>
 
-      {userProjects == null && userToken == null && (
-        <h3 className="warning">Log in to save in project</h3>
-      )}
-
-      {loginError && <h3 className="warning">Error logging in</h3>}
+      {userToken == null && 
+        <p className='warning'>Log in to use this feature</p>
+      }
 
       {userToken != null && (
         <section id="projects-sidebar-content">
@@ -93,7 +89,7 @@ const ProjectsSidebar = () => {
 
           <h2>Your Projects</h2>
           {userProjects === null ? (
-            <p>No projects found</p>
+            <LoadingCircle />
           ) : (
             <>
               {userProjects.map((project) => (
@@ -102,7 +98,7 @@ const ProjectsSidebar = () => {
                   <div>
                     <p>{buildDateFromString(project.inserted_at)}</p>
                     <button onClick={() => {
-                      vscode.postMessage({ type: 'set-active-project', activeProject: project.uuid})
+                      vscode.postMessage({ type: 'set-active-project', activeProject: project})
                       vscode.postMessage({ type: 'open-project' });
                       }}>
                       <svg
@@ -126,7 +122,6 @@ const ProjectsSidebar = () => {
           )}
         </section>
       )}
-      {/* Add your audit sidebar content here */}
     </div>
   );
 };
