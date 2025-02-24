@@ -4,6 +4,7 @@ import { ProjectsPanel } from "./panels/ProjectsPanel";
 import { IssuePanel } from "./panels/IssuePanel";
 import { AuditSidebarProvider } from "./panels/AuditSidebarProvider";
 import { ProjectsSidebarProvider } from "./panels/ProjectsSidebarProvider";
+import { SettingsSidebarProvider } from "./panels/SettingsSidebarProvider";
 
 export function activate(context: ExtensionContext) {
 
@@ -23,6 +24,7 @@ export function activate(context: ExtensionContext) {
 
   const auditSidebarProvider = new AuditSidebarProvider(context.extensionUri);
   const projectsSidebarProvider = new ProjectsSidebarProvider(context.extensionUri, context);
+  const settingsSidebarProvider = new SettingsSidebarProvider(context.extensionUri, context);
 
 	context.subscriptions.push(
 		vscode.window.registerWebviewViewProvider("vstodo-sidebar", auditSidebarProvider)
@@ -31,6 +33,10 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider("vstodo-sidebar2", projectsSidebarProvider)
   );
+
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider("vstodo-sidebar3", settingsSidebarProvider)
+  )
 
   context.subscriptions.push(showProjectsPanel);
   context.subscriptions.push(showIssuePanel);

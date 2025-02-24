@@ -69,6 +69,15 @@ export type Match = {
     wcagClass: string
 }
 
+export type User = {
+    email: string,
+    inserted_at: string,
+    plan: string,
+    updated_at: string,
+    username: string,
+    uuid: string
+}
+
 // You can put this in your ProjectsPanel.tsx or in a separate types file
 
 export interface WebviewState {

@@ -27,20 +27,20 @@ const AuditSidebar = () => {
 
   useEffect(() => {
     // Post the login message only once on component mount
-    vscode.postMessage({ type: 'login' });
+    // vscode.postMessage({ type: 'login' });
 
     // Handler for messages from the VS Code extension
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
-      if (message.type === 'login') {
-        if (message.value.success) {
-          actions.setUserToken(message.value);
-          vscode.postMessage({ type: 'get-projects', userToken: message.value.user_key });
-        } else {
-          setLoginError(true);
-        }
-        return;
-      }
+      // if (message.type === 'login') {
+      //   if (message.value.success) {
+      //     actions.setUserToken(message.value);
+      //     vscode.postMessage({ type: 'get-projects', userToken: message.value.user_key });
+      //   } else {
+      //     setLoginError(true);
+      //   }
+      //   return;
+      // }
       if(message.type === 'auditResults') {
         actions.setAuditResults(message.value);
         return;

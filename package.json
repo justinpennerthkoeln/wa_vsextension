@@ -56,6 +56,13 @@
           "name": "Projects",
           "icon": "media/checklist.svg",
           "contextualTitle": "VSTodo2"
+        },
+        {
+          "type": "webview",
+          "id": "vstodo-sidebar3",
+          "name": "Settings",
+          "icon": "media/checklist.svg",
+          "contextualTitle": "VSTodo3"
         }
       ]
     }

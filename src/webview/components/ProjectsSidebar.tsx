@@ -19,19 +19,19 @@ const ProjectsSidebar = () => {
   
 
   useEffect(() => {
-    vscode.postMessage({ type: 'login' });
+    // vscode.postMessage({ type: 'login' });
 
     const handleMessage = (event: MessageEvent) => {
       const message = event.data;
-      if (message.type === 'login') {
-        if (message.value.success) {
-          actions.setUserToken(message.value);
-          vscode.postMessage({ type: 'get-projects', userToken: message.value.user_key });
-        } else {
-          setLoginError(true);
-        }
-        return;
-      }
+      // if (message.type === 'login') {
+      //   if (message.value.success) {
+      //     actions.setUserToken(message.value);
+      //     vscode.postMessage({ type: 'get-projects', userToken: message.value.user_key });
+      //   } else {
+      //     setLoginError(true);
+      //   }
+      //   return;
+      // }
       if (message.type === 'project-created') {
         if(message.value.success === false) {
           setProjectCreated(false);

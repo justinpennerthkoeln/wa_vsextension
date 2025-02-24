@@ -1,14 +1,12 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
-import doAudit from "../utilities/audit";
-import { getProjects, addIssue } from "../utilities/project";
 import { login } from "../utilities/user";
 
-export class AuditSidebarProvider implements vscode.WebviewViewProvider {
+export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(private readonly _extensionUri: vscode.Uri, private readonly _extensionContext: vscode.ExtensionContext) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
     this._view = webviewView;
@@ -22,32 +20,59 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case "audit": {
-          const data = await doAudit();
+        case "login": {
+          const user = await login(data.value);
+          if (user.success === false) {
+            webviewView.webview.postMessage({
+              type: "login",
+              value: { success: false },
+            });
+            return;
+          }
+          await this._extensionContext.globalState.update("user", user);
           webviewView.webview.postMessage({
-            type: "auditResults",
-            value: data,
+            type: "login",
+            value: { success: true, user },
           });
           break;
         }
-        // case "login": {
-        //   const userToken = await login();
-        //   webviewView.webview.postMessage({
-        //     type: "login",
-        //     value: userToken,
-        //   });
-        //   break;
-        // }
-        case "get-projects": {
-          const projects = await getProjects(data.userToken);
+        case "logout": {
+          await this._extensionContext.globalState.update("user", undefined);
+          await this._extensionContext.globalState.update("settings", undefined);
+          break;
+        }
+        case "get-user": {
+          const user = await this._extensionContext.globalState.get("user", data.activeProject);
+          if(!user) {
+            webviewView.webview.postMessage({
+              type: "get-user",
+              value: { success: false }
+            });
+            return;
+          }
           webviewView.webview.postMessage({
-            type: "get-projects",
-            value: projects,
+            type: "get-user",
+            value: { success: true, user: await user.user }
           });
           break;
         }
-        case "add-issue": {
-          addIssue(data.value.project_uuid, data.value.userToken, data.value.auditResults);
+        case "get-settings": {
+          const settings = await this._extensionContext.globalState.get("settings", data.activeProject);
+          if(!settings) {
+            webviewView.webview.postMessage({
+              type: "get-settings",
+              value: { success: false }
+            });
+            return;
+          }
+          webviewView.webview.postMessage({
+            type: "get-settings",
+            value: { success: true, settings: await settings }
+          });
+          break;
+        }
+        case "save-settings": {
+          await this._extensionContext.globalState.update("settings", data.value);
           break;
         }
       }
@@ -84,8 +109,8 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
     const styleRootUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "root.css")
     );
-    const styleAuditSidebarUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "auditSidebar.css")
+    const styleSettingsSidebarUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "settingsSidebar.css")
     );
 
     const scriptUri = webview.asWebviewUri(
@@ -102,13 +127,13 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
         <link href="${styleResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <link href="${styleRootUri}" rel="stylesheet">
-        <link href="${styleAuditSidebarUri}" rel="stylesheet">
+        <link href="${styleSettingsSidebarUri}" rel="stylesheet">
         <title>Sidebar</title>
       </head>
       <body>
         <div id="root"></div>
         <script nonce="${nonce}" type="module">
-          window.history.pushState({}, '', '/audit');
+          window.history.pushState({}, '', '/settings');
         </script>
         <script nonce="${nonce}" type="module" src="${scriptUri}"></script>
       </body>

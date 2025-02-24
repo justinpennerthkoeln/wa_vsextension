@@ -21,14 +21,14 @@ export class ProjectsSidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case "login": {
-          const userToken = await login();
-          webviewView.webview.postMessage({
-            type: "login",
-            value: userToken,
-          });
-          break;
-        }
+        // case "login": {
+        //   const userToken = await login();
+        //   webviewView.webview.postMessage({
+        //     type: "login",
+        //     value: userToken,
+        //   });
+        //   break;
+        // }
         case "create-project": {
           const project = await createProject(data.value.projectName, data.value.userToken);
           webviewView.webview.postMessage({
