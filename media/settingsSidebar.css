@@ -1,0 +1,21 @@
+h2 {
+  margin-top: var(--space-lg);
+  font-size: var(--size-xl);
+}
+
+h3 {
+  margin-top: var(--space-md);
+  font-size: var(--size-md);
+}
+
+.container {
+  box-shadow: var(--border-shadow);
+  padding: var(--space-md);
+  border-radius: var(--border-radius);
+}
+
+.container div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

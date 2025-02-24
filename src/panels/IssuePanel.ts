@@ -49,6 +49,8 @@ export class IssuePanel {
         }
       );
 
+      panel.iconPath = Uri.joinPath(extensionUri, "media", "fairlyAccess.svg");
+
       IssuePanel.currentPanel = new IssuePanel(panel, extensionUri);
     }
   }

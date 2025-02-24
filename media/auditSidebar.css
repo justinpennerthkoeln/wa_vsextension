@@ -4,7 +4,13 @@ h2 {
 }
 
 h3 {
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-xs);
     font-size: var(--size-md);
+}
+
+button {
+    margin-top: var(--space-md);
 }
 
 #audit-sidebar-content {
@@ -13,15 +19,12 @@ h3 {
     flex-direction: column;
 }
 
-#audit-results-sidebar > * {
-    margin-bottom: var(--space-md);
-}
-
 .audit-result {
     box-shadow: var(--border-shadow);
     border-radius: var(--border-radius);
-    padding: var(--space-md);
     overflow: hidden;
+    padding-left: var(--space-md);
+    padding-bottom: var(--space-md);
 }
 
 .warning {
@@ -44,9 +47,9 @@ h3 {
     border-radius: var(--border-radius);
 }
 
-#add-issue > * {
-    background-color: var(----vscode-editor-background);
-    color: var(--color-text-light);
+#add-issue > option {
+    background-color: var(--color-background);
+    color: var(--color-text);
     padding: var(--space-sm);
     border-radius: var(--border-radius);
 }

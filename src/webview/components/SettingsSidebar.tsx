@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from './Store';
 import { vscode } from '../utilities/vscode';
-import '../../../media/auditSidebar.css';
+import '../../../media/settingsSidebar.css';
 import { User } from '../utilities/types';
 
 const SeetingsSidebar = () => {
@@ -27,7 +27,24 @@ const SeetingsSidebar = () => {
 
   const handleSaveSettings = (e: React.FormEvent) => {
     e.preventDefault();
-    vscode.postMessage({ type: 'save-settings', value: { run: (document.getElementById('run') as HTMLInputElement).checked } });
+    vscode.postMessage({ type: 'save-settings', 
+      value: [
+        { 
+          checked: (document.getElementById('auto-audit') as HTMLInputElement).checked,
+          name: 'Run Audit on page Save',
+          identifier: 'auto-audit'
+        },
+        {
+          checked: (document.getElementById('auto-pdf') as HTMLInputElement).checked,
+          name: 'Generate PDF on page Save',
+          identifier: 'auto-pdf'
+        },
+        {
+          checked: (document.getElementById('auto-mark') as HTMLInputElement).checked,
+          name: 'Mark issues in code on page Save',
+          identifier: 'auto-mark'
+        }
+      ] });
   };
 
   useEffect(() => {
@@ -59,7 +76,13 @@ const SeetingsSidebar = () => {
           setSettings(message.value.settings);
           return;
         }
-        setSettings({run: true});
+        setSettings(
+          [
+            { checked: false, name: 'Run Audit on page Save', identifier: 'auto-audit' },
+            { checked: false, name: 'Generate PDF on page Save', identifier: 'auto-pdf' },
+            { checked: false, name: 'Mark issues in code on page Save', identifier: 'auto-mark' }
+          ]
+        );
       }
     };
 
@@ -92,16 +115,26 @@ const SeetingsSidebar = () => {
       
       {isLoggedIn && user && settings &&
         <>
-          <p>Welcome, {user.username}</p>
+          <h3>Welcome, {user.username}</h3>
           <button onClick={handleLogout}>Logout</button>
+
+          <h3>Your Settings</h3>
           <form action="" id="settings-form" onSubmit={
             (e) => {
               e.preventDefault();
               handleSaveSettings(e);
             }
           }>
-            <label htmlFor="run">Run on page load</label>
-            <input type="checkbox" id="run" name="run" defaultChecked={settings.run} />
+              {settings.map((setting: any, index: number) => {
+                return (
+                  <div key={index} className="container">
+                    <div>
+                      <label htmlFor={setting.name}>{setting.name}</label>
+                      <input type="checkbox" id={setting.identifier} name={setting.name} defaultChecked={setting.checked} />
+                    </div>
+                  </div>
+                );
+              })}
             <button type="submit">Save</button>
           </form>
         </>

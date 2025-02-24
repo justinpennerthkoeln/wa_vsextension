@@ -63,6 +63,8 @@ export class ProjectsPanel {
         }
       );
 
+      panel.iconPath = Uri.joinPath(extensionUri, "media", "fairlyAccess.svg");
+
       ProjectsPanel.currentPanel = new ProjectsPanel(panel, extensionUri, extensionContext);
     }
   }

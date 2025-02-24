@@ -56,7 +56,6 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
         }
         case "add-issue": {
           const issueAdded = await addIssue(data.value.project_uuid, data.value.userToken, data.value.auditResults);
-          console.log(issueAdded);
           webviewView.webview.postMessage({
             type: "add-issue",
             value: { success: issueAdded },

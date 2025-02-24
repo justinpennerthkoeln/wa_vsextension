@@ -78,47 +78,48 @@ const AuditSidebar = () => {
 
       <section id="audit-sidebar-content">
         <button onClick={handleAudit}>Audit</button>
+        <button type="button">Genereate PDF</button>
         {isNotHtml &&
           <p className='warning'>Only HTML files can be audited</p>
         }
 
         {auditResults &&
           <>
+            <h3>Audit Results</h3>
             <div id="audit-results-sidebar">
               {
                 // @ts-ignore
                 auditResults.matches.map((match: Match, index: number) => (
                   <div key={index} className="audit-result" >
                     <h3>{match.heading}</h3>
-                    <pre>
-                      {match.content}
-                    </pre>
                     <p>Line Index: {match.lineIndex? match.lineIndex : "Could not be found"}</p>
                   </div>
                 ))
               }
-              <button type="button">Genereate PDF</button>
 
               { userToken == null &&
                 <p className='warning'>Log in to use Projects-Feature</p>
               }
               { userProjects &&
-                <form action="" onSubmit={handleAddIssue} >
-                  <select name="" id="add-issue">
-                    {
-                      userProjects.map((project: Project, index: number) => (
-                        <option key={index} value={project.uuid}>{project.name}</option>
-                      ))
+                <>
+                  <h3>Add Issue to Project</h3>
+                  <form action="" onSubmit={handleAddIssue} >
+                    <select name="" id="add-issue">
+                      {
+                        userProjects.map((project: Project, index: number) => (
+                          <option key={index} value={project.uuid}>{project.name}</option>
+                        ))
+                      }
+                    </select>
+                    <button>Add to Project</button>
+                    { isIssueAdded !== null &&
+                      <>
+                        <p className='success' hidden={isIssueAdded}>Added Issue</p>
+                        <p className='warning' hidden={!isIssueAdded}>Select A html file.</p>
+                      </>
                     }
-                  </select>
-                  <button>Add to Project</button>
-                  { isIssueAdded !== null &&
-                    <>
-                      <p className='success' hidden={isIssueAdded}>Added Issue</p>
-                      <p className='warning' hidden={!isIssueAdded}>Select A html file.</p>
-                    </>
-                  }
-                </form>
+                  </form>
+                </>
               }
               
             </div>
