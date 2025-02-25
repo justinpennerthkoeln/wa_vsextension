@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { use, useEffect, useState, useRef } from 'react';
 import { useApp } from './Store';
 import '../../../media/projectPanel.css';
 import { vscode } from '../utilities/vscode';
@@ -14,6 +14,7 @@ const ProjectsPanel = () => {
   const [deleteProjectPermissionError, setDeleteProjectPermissionError] = useState(false);
   const [deleteProjectServerError, setDeleteProjectServerError] = useState(false);
   const [isUserOwner, setIsUserOwner] = useState<boolean | null>(null);
+  const checkboxesRef = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
   /**
    * Handle functions
@@ -64,6 +65,15 @@ const ProjectsPanel = () => {
     }
     setDeleteProjectPermissionError(false);
     vscode.postMessage({ type: 'delete-project', value: { project_uuid: activeProject?.uuid } });
+  };
+
+  const handlePDFGeneration = () => {
+    console.log("PDF Generation");
+    const selectedIssues = activeProject?.issues.filter(issue => {
+      const checkbox = checkboxesRef.current[issue.uuid];
+      return checkbox && checkbox.checked;
+    });
+    vscode.postMessage({ type: 'generate-pdf', value: { issues: selectedIssues, project: activeProject } });
   };
  
   /**
@@ -141,11 +151,24 @@ const ProjectsPanel = () => {
 
       <section id="projects-panel-content">
         <div id="issues" className="container">
-          <h3>Issues</h3>
+          <div id ="issues-header">
+            <h3>Issues</h3>
+            <button onClick={
+              () => {
+                handlePDFGeneration();
+              }
+            }>Generate PDF</button>
+          </div>
           { activeProject.issues.length === 0 && <p>No issues found</p> }
           {
             activeProject.issues.map((issue:Issue) => (
               <div className="issue" id={issue.uuid}>
+                <input
+                  type="checkbox"
+                  ref={el => {
+                    checkboxesRef.current[issue.uuid] = el;
+                  }}
+                />
                 <p>{issue.filename}</p>
                 <p>{issue.user.username}</p>
                 <p>Created: {buildDateFromString(issue.inserted_at)}</p>

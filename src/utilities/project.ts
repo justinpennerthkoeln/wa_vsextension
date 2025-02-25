@@ -1,6 +1,10 @@
 import * as vscode from 'vscode';
 import { AuditResults } from '../../src/webview/utilities/types';
 
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
+
 export function createProject(projectName: string, userToken: string) {
     return fetch('http://localhost:4000/v1/projects/create', {
         method: 'POST',
@@ -109,4 +113,23 @@ export function addIssue(projectUuid: string, userToken: string, auditResults: A
             return data.success;
         });
     })
+}
+
+export async function generate_pdf(issues: any, project: boolean | any) {
+    try {
+        await fetch('http://localhost:4000/v1/pdf', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ issues: issues, project: project }),
+        }).then(response => {
+            return response.json()
+        }).then(data => {
+            // Open the PDF in the default PDF viewer
+            vscode.env.openExternal(vscode.Uri.parse("http://localhost:4000/v1/pdf/" + data.pdf_path));
+        });
+    } catch (error) {
+        throw new Error('Failed to generate PDF');
+    }
 }

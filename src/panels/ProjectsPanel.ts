@@ -2,7 +2,7 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vsco
 import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
 
-import { getProject, addUser, deleteUser, deleteProject } from "../utilities/project";
+import { getProject, addUser, deleteUser, deleteProject, generate_pdf } from "../utilities/project";
 import { getUsers } from "../utilities/user";
 import { onRefreshProjects } from '../utilities/events';
 import { Member, Project, User } from "../webview/utilities/types";
@@ -209,6 +209,9 @@ export class ProjectsPanel {
                 value: { isUserOwner: false},
               });
             }
+            return;
+          case "generate-pdf":
+            await generate_pdf(value.issues, value.project);
             return;
         }
       },

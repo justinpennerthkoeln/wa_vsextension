@@ -26,10 +26,6 @@
       {
         "command": "accessibility.closeIssuePanel",
         "title": "close Issue Panel"
-      },
-      {
-        "command": "accessibility.notLoggedIn",
-        "title": "Please log in"
       }
     ],
     "viewsContainers": {
@@ -75,7 +71,9 @@
   },
   "dependencies": {
     "@rollup/plugin-alias": "^5.1.1",
+    "fs": "^0.0.1-security",
     "idb": "^8.0.2",
+    "os": "^0.1.2",
     "path": "^0.12.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

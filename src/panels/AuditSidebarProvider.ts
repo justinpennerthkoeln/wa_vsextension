@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import doAudit from "../utilities/audit";
-import { getProjects, addIssue } from "../utilities/project";
+import { getProjects, addIssue, generate_pdf } from "../utilities/project";
 import { onRefreshProjects } from '../utilities/events';
 import { User } from "../webview/utilities/types";
 
@@ -62,6 +62,18 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
           });
           onRefreshProjects.fire();
           break;
+        }
+        case "generate-pdf": {
+          var issue = [
+            {
+              filename: vscode.window.activeTextEditor?.document.fileName.split('/').pop(),
+              inserted_at: new Date().toISOString(),
+              matches: data.value.matches,
+              matches_count: data.value.matches.length, // Use the length of matches array for numberOfErrors
+            }
+          ]
+          await generate_pdf(issue, false);
+          return;
         }
       }
     });

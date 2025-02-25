@@ -129,6 +129,13 @@ button {
   align-items: center;
 }
 
+#issues-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .issue > * {
   margin-top: var(--space-sm);
 }

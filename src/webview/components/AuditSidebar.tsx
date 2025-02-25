@@ -27,6 +27,11 @@ const AuditSidebar = () => {
     }
   };
 
+  const handlePdfGeneration = (e: React.MouseEvent, auditResults: any) => {
+    e.preventDefault();
+    vscode.postMessage({ type: 'generate-pdf', value: auditResults });
+  };
+
   useEffect(() => {
     vscode.postMessage({ type: 'get-user' });
 
@@ -78,13 +83,17 @@ const AuditSidebar = () => {
 
       <section id="audit-sidebar-content">
         <button onClick={handleAudit}>Audit</button>
-        <button type="button">Genereate PDF</button>
         {isNotHtml &&
           <p className='warning'>Only HTML files can be audited</p>
         }
 
         {auditResults &&
           <>
+            <button type="button" onClick={
+              (e) => {
+                handlePdfGeneration(e, auditResults);
+              }
+            }>Genereate PDF</button>
             <h3>Audit Results</h3>
             <div id="audit-results-sidebar">
               {
