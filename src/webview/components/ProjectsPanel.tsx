@@ -14,6 +14,7 @@ const ProjectsPanel = () => {
   const [deleteProjectPermissionError, setDeleteProjectPermissionError] = useState(false);
   const [deleteProjectServerError, setDeleteProjectServerError] = useState(false);
   const [isUserOwner, setIsUserOwner] = useState<boolean | null>(null);
+  const [noIssuesSelected, setNoIssuesSelected] = useState<boolean>(false);
   const checkboxesRef = useRef<{ [key: string]: HTMLInputElement | null }>({});
 
   /**
@@ -68,11 +69,15 @@ const ProjectsPanel = () => {
   };
 
   const handlePDFGeneration = () => {
-    console.log("PDF Generation");
+    setNoIssuesSelected(false);
     const selectedIssues = activeProject?.issues.filter(issue => {
       const checkbox = checkboxesRef.current[issue.uuid];
       return checkbox && checkbox.checked;
     });
+    if(selectedIssues?.length === 0) {
+      setNoIssuesSelected(true);
+      return;
+    }
     vscode.postMessage({ type: 'generate-pdf', value: { issues: selectedIssues, project: activeProject } });
   };
  
@@ -159,7 +164,13 @@ const ProjectsPanel = () => {
               }
             }>Generate PDF</button>
           </div>
+
+          {noIssuesSelected && 
+            <p id="error-msg" hidden={!noIssuesSelected} className='warning'>No issues selected</p>
+          }
+
           { activeProject.issues.length === 0 && <p>No issues found</p> }
+          
           {
             activeProject.issues.map((issue:Issue) => (
               <div className="issue" id={issue.uuid}>

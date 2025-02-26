@@ -99,18 +99,26 @@ const SeetingsSidebar = () => {
       <p>Settings for the extension</p>
 
       {!isLoggedIn &&
-        <form action="" id="login-form" onSubmit={
-          (e) => {
-            handleLogin(e);
-          }
-        }>
-          <label htmlFor="email">E-mail</label>
-          <input type="email" id="email" name="email" />
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" name="password" />
-          <button type="submit">Login</button>
-          {loginError && <p className='warning'>Invalid login</p>}
-        </form>
+        <>
+          <form action="" id="login-form" onSubmit={
+            (e) => {
+              handleLogin(e);
+            }
+          }>
+            <label htmlFor="email">E-mail</label>
+            <input type="email" id="email" name="email" />
+            <label htmlFor="password">Password</label>
+            <input type="password" id="password" name="password" />
+            <button type="submit">Login</button>
+            {loginError && <p className='warning'>Invalid login</p>}
+          </form>
+          <button onClick={
+            (e) => {
+              e.preventDefault();
+              vscode.postMessage({ type: 'register' });
+            }
+          }>or Register</button>
+        </>
       }
       
       {isLoggedIn && user && settings &&

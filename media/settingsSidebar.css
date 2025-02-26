@@ -19,3 +19,17 @@ h3 {
   justify-content: space-between;
   align-items: center;
 }
+
+.container input {
+  background-color: var(----vscode-editor-background);
+  border-color: var(--vscode-input-border);
+  color: var(--vscode-input-foreground);
+}
+
+.container input:checked {
+  background-color: var(--color-primary);
+}
+
+.container input:hover {
+  color: var(--vscode-focusBorder);
+}

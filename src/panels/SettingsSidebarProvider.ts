@@ -1,7 +1,9 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
+import * as dotenv from "dotenv";
 import { login } from "../utilities/user";
 
+dotenv.config();
 export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
@@ -73,6 +75,10 @@ export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
         }
         case "save-settings": {
           await this._extensionContext.globalState.update("settings", data.value);
+          break;
+        }
+        case "register": {
+          vscode.env.openExternal(vscode.Uri.parse(`https://localhost:4000/register`));
           break;
         }
       }

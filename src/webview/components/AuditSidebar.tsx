@@ -87,7 +87,11 @@ const AuditSidebar = () => {
           <p className='warning'>Only HTML files can be audited</p>
         }
 
-        {auditResults &&
+        {auditResults && auditResults.numberOfErrors === 0 &&
+          <p className='success'>No issues found</p>
+        }
+
+        {auditResults && auditResults.numberOfErrors > 0 &&
           <>
             <button type="button" onClick={
               (e) => {
@@ -99,7 +103,15 @@ const AuditSidebar = () => {
               {
                 // @ts-ignore
                 auditResults.matches.map((match: Match, index: number) => (
-                  <div key={index} className="audit-result" >
+                  <div key={index} className="audit-result" onMouseOver={
+                    (e) => {
+                      vscode.postMessage({ type: 'highlight', value: {line: match.lineIndex} });
+                    }
+                  } onMouseOut={
+                    (e) => {
+                      vscode.postMessage({ type: 'unhighlight', value: {line: match.lineIndex} });
+                    }
+                  }>
                     <h3>{match.heading}</h3>
                     <p>Line Index: {match.lineIndex? match.lineIndex : "Could not be found"}</p>
                   </div>

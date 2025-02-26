@@ -9,6 +9,11 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
 
+  private readonly highlightDecorationType = vscode.window.createTextEditorDecorationType({
+    backgroundColor: "rgba(228, 228, 206, 0.3)",
+    isWholeLine: true,
+  });
+
   constructor(private readonly _extensionUri: vscode.Uri, private readonly _extensionContext: vscode.ExtensionContext) {}
 
   public resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -74,6 +79,21 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
           ]
           await generate_pdf(issue, false);
           return;
+        }
+        case "highlight": {
+          const line = data.value.line - 1;
+          const editor = vscode.window.activeTextEditor;
+          if (!editor) { return; }
+          const range = (line != null) ? new vscode.Range(line, 0, line, 0) : new vscode.Range(line, 0, line, 0);
+          editor.setDecorations(this.highlightDecorationType, [range]);
+          editor.revealRange(range, vscode.TextEditorRevealType.InCenter);
+          break;
+        }
+        case "unhighlight": {
+          const editor = vscode.window.activeTextEditor;
+          if (!editor) { return; }
+          editor.setDecorations(this.highlightDecorationType, []);
+          break;
         }
       }
     });
