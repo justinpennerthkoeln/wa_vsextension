@@ -1,53 +1,127 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useApp } from './Store';
 import '../../../media/issuePanel.css';
+import { vscode } from '../utilities/vscode';
+import LoadingCircle from './LoadingCircle';
+import Flag from './Flag';
+import { buildDateFromString } from '../../utilities/buildDateFromString';
+import { Match } from '../utilities/types';
 
 const IssuePanel = () => {
-  const { userProjects, actions } = useApp();
+  const { activeProject, actions } = useApp();
+  const [isUserOwner, setIsUserOwner] = React.useState<boolean | null>(null);
+  const [activeIssue, setActiveIssue] = React.useState<any | null>(null);
+
+  const handlePdfGeneration = () => {
+    vscode.postMessage({ type: 'generate-pdf', value: { issues: activeIssue } });
+  };
+
+  useEffect(() => {
+    vscode.postMessage({ type: 'get-project' });
+    vscode.postMessage({ type: 'get-issue' });
+
+    const handleMessage = (event: MessageEvent) => {
+      const message = event.data;
+      if (message.type === 'get-issue') {
+        if (message.value.success) {
+          setActiveIssue(message.value.issue);
+          actions.setActiveIssue(message.value.issue);
+        }
+        return;
+      }
+      if (message.type === 'get-project') {
+        if (message.value.success) {
+          actions.setActiveProject(message.value.project);
+          vscode.postMessage({ type: 'get-user' });
+        }
+        return;
+      }
+      if (message.type === 'get-user') {
+        setIsUserOwner(message.value.isUserOwner);
+        return;
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, [actions]);
+
+  useEffect(() => {
+    console.log(activeIssue);
+  }, [activeIssue]);
 
   return (
-    <div>
-      <section id="projects-panel-header">
-        <div>
-          <h2>Testproject - Issues</h2>
-          <button id="flag">Member</button>
-          <button id="delete-btn">Delete</button>
-        </div>
-        <p>Created: 12.03.2025</p>
-      </section>
+    <div id="issue-panel">
+      {activeProject == null && 
+        <>
+          <LoadingCircle/>
+        </>
+      }
 
-      <section id="issue-panel-content">
-        <h3>login.html / Kevin P.</h3>
-        <div id="issues-panel">
-          <div className="container issue">
-            <div className="issue-content-header">
-              <h4>Provide text content for elements</h4>
-              <h4>Line: 3</h4>
-            </div>
-            <pre>
-              &lt;label&gt;&lt;/label&gt;
-            </pre>
-            <h4>Suggestion</h4>
-            <pre>
-              &lt;label&gt;Test Content&lt;/label&gt;
-            </pre>
+      {activeProject != null &&
+       <>
+        <section id="issue-panel-header">
+          <div>
+            <h2>{activeProject.name}</h2>
+            { isUserOwner !== null &&
+              <Flag flag={(isUserOwner) ? "owner" : "member"}></Flag>
+            }
+            <button id="delete-btn">Delete</button>
           </div>
-          <div className="container issue">
-            <div className="issue-content-header">
-              <h4>Provide for Attribute</h4>
-              <h4>Line: 3</h4>
-            </div>
-            <pre>
-              &lt;label for=""&gt;&lt;/label&gt;
-            </pre>
-            <h4>Suggestion</h4>
-            <pre>
-              &lt;label for="username"&gt;&lt;/label&gt;
-            </pre>
-          </div>
-        </div>
-      </section>
-      {/* Add your audit sidebar content here */}
+          <p>Created: {buildDateFromString(activeProject.inserted_at)}</p>
+          <p id="error-msg" hidden={true} className='warning'>You aren't allowed to delete this Project</p>
+          <p id="error-msg" hidden={true} className='warning'>Something went wrong. Please reopen panel.</p>
+        </section>
+
+        {
+          activeIssue == null &&
+          <>
+            <LoadingCircle/>
+          </>
+        }
+
+        <>
+          {activeIssue != null && 
+            <section id="issue-panel-content">
+              <div id="issue-panel-content-header">
+                <h3>{activeIssue.filename} - {activeIssue.matches_count} Issues</h3>
+                <button
+                  onClick={
+                    (e) => {
+                      e.preventDefault();
+                      handlePdfGeneration();
+                    }
+                  }
+                >Generate PDF</button>
+              </div>
+              <div id="issues-panel">
+                {
+                  (Object.values(activeIssue.matches) as Match[]).map((match: Match, index: number) => (
+                    <div className="container issue" key={index}>
+                      <div className="issue-content-header">
+                        <h4>{match.heading}</h4>
+                        <h4>Line: {match.lineIndex}</h4>
+                      </div>
+                      <pre>
+                        {match.content}
+                      </pre>
+                      <h4>Suggestion</h4>
+                      <pre>
+                        test
+                      </pre>
+                    </div>
+                  )
+                )}
+              </div>
+            </section>
+          }
+        </>
+        
+       </>
+      }
     </div>
   );
 };

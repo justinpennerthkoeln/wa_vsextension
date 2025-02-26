@@ -3,11 +3,13 @@ export interface Provider {
     userProjects: null | Array<Project>,
     userToken: null | string,
     activeProject: null | Project,
+    activeIssue: null | Issue,
     actions: {
         setAuditResults: (value: any) => void;
         setUserProjects: (value: any) => void;
         setUserToken: (value: any) => void;
         setActiveProject: (value: any) => void;
+        setActiveIssue: (value: any) => void;
     }
 }
 

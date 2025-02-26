@@ -16,7 +16,7 @@ export function activate(context: ExtensionContext) {
   });
 
   const showIssuePanel = commands.registerCommand("accessibility.openIssuePanel", () => {
-    IssuePanel.render(context.extensionUri);
+    IssuePanel.render(context.extensionUri, context);
   });
   const closeIssuePanel = commands.registerCommand("accessibility.closeIssuePanel", () => {
     IssuePanel.currentPanel?.dispose();

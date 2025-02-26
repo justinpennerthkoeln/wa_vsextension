@@ -121,7 +121,7 @@ export class ProjectsPanel {
         <body>
           <div id="root"></div>
           <script nonce="${nonce}" type="module">
-            window.history.pushState({}, '', '/projects/1');
+            window.history.pushState({}, '', '/project');
           </script>
           <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
         </body>
@@ -157,7 +157,7 @@ export class ProjectsPanel {
             });
             return;
           case "set-active-issue":
-            await this._extensionContext.globalState.update("activeIssue", value.activeProject);
+            await this._extensionContext.globalState.update("activeIssue", value.activeIssue);
             return;
           case "open-issue":
             vscode.commands.executeCommand("accessibility.closeIssuePanel");

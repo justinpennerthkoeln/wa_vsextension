@@ -1,14 +1,17 @@
 import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
+import { Member, Project, User } from "../webview/utilities/types";
+import { generate_pdf } from "../utilities/project";
 
 export class IssuePanel {
   public static currentPanel: IssuePanel | undefined;
   private readonly _panel: WebviewPanel;
   private _disposables: Disposable[] = [];
   private extensionUri: Uri;
+  private _extensionContext: vscode.ExtensionContext
 
-  private constructor(panel: WebviewPanel, extensionUri: Uri) {
+  private constructor(panel: WebviewPanel, extensionUri: Uri, extensionContext: vscode.ExtensionContext) {
     this._panel = panel;
 
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
@@ -16,6 +19,7 @@ export class IssuePanel {
     this._panel.webview.html = this._getWebviewContent(this._panel.webview, extensionUri);
 
     this.extensionUri = extensionUri;
+    this._extensionContext = extensionContext;
 
     this._panel.webview.options = {
       enableScripts: true,
@@ -25,7 +29,7 @@ export class IssuePanel {
     this._setWebviewMessageListener(this._panel.webview);
   }
 
-  public static render(extensionUri: Uri) {
+  public static render(extensionUri: Uri, extensionContext: vscode.ExtensionContext) {
     if (IssuePanel.currentPanel) {
       IssuePanel.currentPanel._panel.reveal(ViewColumn.One);
     } else {
@@ -51,7 +55,7 @@ export class IssuePanel {
 
       panel.iconPath = Uri.joinPath(extensionUri, "media", "fairlyAccess.svg");
 
-      IssuePanel.currentPanel = new IssuePanel(panel, extensionUri);
+      IssuePanel.currentPanel = new IssuePanel(panel, extensionUri, extensionContext);
     }
   }
 
@@ -107,7 +111,7 @@ export class IssuePanel {
         <body>
           <div id="root"></div>
           <script nonce="${nonce}" type="module">
-            window.history.pushState({}, '', '/projects/1/issues/2');
+            window.history.pushState({}, '', '/issue');
           </script>
           <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
         </body>
@@ -117,17 +121,56 @@ export class IssuePanel {
 
   private _setWebviewMessageListener(webview: Webview) {
     webview.onDidReceiveMessage(
-      (message: any) => {
-        const command = message.command;
-        const text = message.text;
+      async (message: any) => {
+        const type = message.type;
+        const value = message.value;
 
-        switch (command) {
-          case "hello":
-            // Code that should run in response to the hello message command
-            window.showInformationMessage(text);
+        switch (type) {
+          case "get-user":
+            const user = (await this._extensionContext.globalState.get("user") as {success: boolean, user: User});
+            var active_project = await this._extensionContext.globalState.get("activeProject");
+            var state = false;
+            
+            (active_project as Project).members.forEach((member: Member) => {
+              if(member.username === user.user.username && member.role === "owner") { state = true; return;}
+            });
+            
+            if(state) {
+              webview.postMessage({
+                type: "get-user",
+                value: { isUserOwner: true},
+              });
+            }
+
+            if(state === false) {
+              webview.postMessage({
+                type: "get-user",
+                value: { isUserOwner: false},
+              });
+            }
             return;
-          // Add more switch case statements here as more webview message commands
-          // are created within the webview context (i.e. inside media/main.js)
+          case "get-issue":
+            webview.postMessage({
+              type: "get-issue",
+              value: {
+                success: true,
+                issue: await this._extensionContext.globalState.get("activeIssue")
+              },
+            })
+            return;
+          case "get-project":
+            webview.postMessage({
+              type: "get-project",
+              value: {
+                success: true,
+                project: this._extensionContext.globalState.get("activeProject")
+              },
+            })
+            return;
+          case "generate-pdf":
+            await generate_pdf(value.issues, true);
+            return;
+            
         }
       },
       undefined,

@@ -12,11 +12,13 @@ const AppStoreProvider = ({ children }: { children: React.ReactNode }) => {
       userProjects: null,
       userToken: null,
       activeProject: null,
+      activeIssue: null,
       actions: {
         setAuditResults: (value) => set({ auditResults: value }),
         setUserProjects: (value) => set({ userProjects: value }),
         setUserToken: (value) => set({ userToken: value }),
         setActiveProject: (value) => set({ activeProject: value }),
+        setActiveIssue: (value) => set({ activeIssue: value }),
       },
     }))
   );

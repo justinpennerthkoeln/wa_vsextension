@@ -185,7 +185,7 @@ const ProjectsPanel = () => {
                 <p>Created: {buildDateFromString(issue.inserted_at)}</p>
                 <button onClick={
                   () => {
-                    vscode.postMessage({ type: 'set-active-issue', activeIssue: issue.uuid})
+                    vscode.postMessage({ type: 'set-active-issue', value: { activeIssue: issue }})
                     vscode.postMessage({ type: 'open-issue' });
                   }
                 }>

@@ -12,8 +12,8 @@ function App() {
       <Routes>
         <Route path="/projects" element={<ProjectsSidebar />} />
         <Route path="/audit" element={<AuditSidebar />} />
-        <Route path="/projects/:projectId" element={<ProjectsPanel />} />
-        <Route path="/projects/:projectId/issues/:issueId" element={<IssuePanel />} />
+        <Route path="/project" element={<ProjectsPanel />} />
+        <Route path="/issue" element={<IssuePanel />} />
         <Route path="/settings" element={<SettingsSidebar/>} />
       </Routes>
     </Router>

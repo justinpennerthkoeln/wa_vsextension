@@ -22,14 +22,6 @@ button {
   color: var(--color-text-light);
 }
 
-/* #flag {
-  max-width: fit-content;
-  background-color: var(--color-success);
-  color: var(--color-text);
-  margin: 0 var(--space-sm);
-  margin-top: var(--space-xxs);
-} */
-
 #delete-btn {
   max-height: fit-content;
   max-width: fit-content;

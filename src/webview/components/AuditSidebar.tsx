@@ -103,7 +103,7 @@ const AuditSidebar = () => {
               {
                 // @ts-ignore
                 auditResults.matches.map((match: Match, index: number) => (
-                  <div key={index} className="audit-result" onMouseOver={
+                  <div key={index} className="audit-result" onClick={
                     (e) => {
                       vscode.postMessage({ type: 'highlight', value: {line: match.lineIndex} });
                     }
