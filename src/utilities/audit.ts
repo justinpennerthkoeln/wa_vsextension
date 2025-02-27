@@ -1,14 +1,31 @@
 import * as vscode from 'vscode';
-import { AuditResults } from '../webview/utilities/types';
+import { AuditResults, Settings } from '../webview/utilities/types';
+import { evalSettings } from './settings';
 
 const auditDiagnosticCollection = vscode.languages.createDiagnosticCollection('poc-ba');
 
-function doAudit() {
+async function doAudit(settings: Settings) {
+    auditDiagnosticCollection.clear();
+	const shouldMarkIssueLines = evalSettings(settings, "auto-mark");
+    const document = vscode.window.activeTextEditor?.document;
+    if(document && document.fileName.includes("html")) {
+        return pocAudit(document.getText()).then((data) => {
+			if(shouldMarkIssueLines) {
+				markIssueLines(data, document, auditDiagnosticCollection);
+			}
+            return data;
+        })
+    } else {
+		return {success: false};
+	}
+}
+
+async function doCommandAudit() {
     auditDiagnosticCollection.clear();
     const document = vscode.window.activeTextEditor?.document;
     if(document && document.fileName.includes("html")) {
         return pocAudit(document.getText()).then((data) => {
-            markIssueLines(data, document, auditDiagnosticCollection);
+				markIssueLines(data, document, auditDiagnosticCollection);
             return data;
         })
     } else {

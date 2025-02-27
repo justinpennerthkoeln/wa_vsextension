@@ -81,6 +81,14 @@ export type User = {
     uuid: string
 }
 
+export type Settings = Array<Setting>;
+
+export type Setting = {
+    checked: boolean,
+    identifier: string,
+    name: string
+}
+
 // You can put this in your ProjectsPanel.tsx or in a separate types file
 
 export interface WebviewState {

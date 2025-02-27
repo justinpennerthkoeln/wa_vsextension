@@ -4,7 +4,7 @@ import doAudit from "../utilities/audit";
 import { getProjects, addIssue} from "../utilities/project";
 import { generateAuditPdf } from "../utilities/pdf_gen";
 import { onRefreshProjects } from '../utilities/events';
-import { User } from "../webview/utilities/types";
+import { AuditResults, Settings, User } from "../webview/utilities/types";
 
 export class AuditSidebarProvider implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
@@ -30,10 +30,11 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "audit": {
-          const data = await doAudit();
+          const settings = await this._extensionContext.globalState.get("settings", data.activeProject);
+          const auditResults: AuditResults = await doAudit(await settings);
           webviewView.webview.postMessage({
             type: "auditResults",
-            value: data,
+            value: auditResults,
           });
           break;
         }
