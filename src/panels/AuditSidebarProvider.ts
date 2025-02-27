@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import doAudit from "../utilities/audit";
-import { getProjects, addIssue, generate_pdf } from "../utilities/project";
+import { getProjects, addIssue} from "../utilities/project";
+import { generateAuditPdf } from "../utilities/pdf_gen";
 import { onRefreshProjects } from '../utilities/events';
 import { User } from "../webview/utilities/types";
 
@@ -77,7 +78,7 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
               matches_count: data.value.matches.length, // Use the length of matches array for numberOfErrors
             }
           ]
-          await generate_pdf(issue, false);
+          await generateAuditPdf(issue);
           return;
         }
         case "highlight": {

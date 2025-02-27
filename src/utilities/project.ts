@@ -1,10 +1,6 @@
 import * as vscode from 'vscode';
 import { AuditResults } from '../../src/webview/utilities/types';
 
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
-
 export function createProject(projectName: string, userToken: string) {
     return fetch('http://localhost:4000/v1/projects/create', {
         method: 'POST',
@@ -50,6 +46,19 @@ export function getProject(projectUuid: string) {
     )
 }
 
+export function deleteProject(projectUuid: string) {
+    return fetch(`http://localhost:4000/v1/projects/${projectUuid}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }).then(response => {
+        return response.json().then(data => {
+            return data;
+        });
+    })
+}
+
 export function addUser(projectUuid: string, userUuid: string) {
     return fetch(`http://localhost:4000/v1/projects/${projectUuid}/add_member`, {
         method: 'POST',
@@ -79,18 +88,7 @@ export function deleteUser(memberUuid: string) {
     })
 }
 
-export function deleteProject(projectUuid: string) {
-    return fetch(`http://localhost:4000/v1/projects/${projectUuid}/delete`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        }
-    }).then(response => {
-        return response.json().then(data => {
-            return data;
-        });
-    })
-}
+
 
 export function addIssue(projectUuid: string, userToken: string, auditResults: AuditResults) {
     const filename = vscode.window.activeTextEditor?.document.fileName.split('/').pop();
@@ -115,21 +113,15 @@ export function addIssue(projectUuid: string, userToken: string, auditResults: A
     })
 }
 
-export async function generate_pdf(issues: any, project: boolean | any) {
-    try {
-        await fetch('http://localhost:4000/v1/pdf', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ issues: issues, project: project }),
-        }).then(response => {
-            return response.json()
-        }).then(data => {
-            // Open the PDF in the default PDF viewer
-            vscode.env.openExternal(vscode.Uri.parse("http://localhost:4000/v1/pdf/" + data.pdf_path));
+export function deleteIssue(issueUuid: string) {
+    return fetch(`http://localhost:4000/v1/issues/${issueUuid}/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    }).then(response => {
+        return response.json().then(data => {
+            return data;
         });
-    } catch (error) {
-        throw new Error('Failed to generate PDF');
-    }
+    })
 }

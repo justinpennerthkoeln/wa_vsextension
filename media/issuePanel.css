@@ -19,16 +19,17 @@ button {
   max-width: 20%;
   border-radius: var(--border-radius);
   padding: var(--space-xxs) var(--space-md);
-  color: var(--color-text-light);
 }
 
-#delete-btn {
+.delete-btn {
   max-height: fit-content;
   max-width: fit-content;
   background-color: var(--color-danger);
-  color: var(--color-text);
-  margin: 0 var(--space-sm);
   margin-top: var(--space-xxs);
+}
+
+.delete-btn:hover {
+  background-color: var(--color-danger-hover);
 }
 
 .warning {
@@ -75,7 +76,6 @@ button {
 
 #issue-panel-header div button:last-child {
   margin-left: auto;
-  margin-right: var(--space-md);
 }
 /************************************************************
  Issues Panel Content */
@@ -94,6 +94,7 @@ button {
 
 #issue-panel-content-header button {
   width: fit-content;
+  margin-right: 0;
 }
 
 .container {
@@ -113,7 +114,6 @@ button {
 pre {
   white-space: pre-wrap;
   word-wrap: break-word;
-  background-color: rgb(78, 78, 78);
   padding: var(--space-sm);
   max-width: fit-content;
 }
@@ -137,4 +137,27 @@ pre {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/************************************************************
+ Issue Description */
+
+.issue-description {
+  display: flex;
+  flex-direction: column;
+}
+
+.issue-description > h4 {
+  margin-top: var(--space-sm);
+}
+
+.issue-description > p {
+  margin-top: var(--space-xs);
+}
+
+/************************************************************
+ Issue Content */
+
+#suggestion-content {
+  margin-top: var(--space-md);
 }

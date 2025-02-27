@@ -69,6 +69,7 @@ export type Match = {
     url: string,
     wcag: string,
     wcagClass: string
+    suggestion: string | null
 }
 
 export type User = {

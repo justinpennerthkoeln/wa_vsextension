@@ -2,7 +2,8 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vsco
 import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
 import { Member, Project, User } from "../webview/utilities/types";
-import { generate_pdf } from "../utilities/project";
+import { generateSingleIssuePdf } from "../utilities/pdf_gen";
+import { deleteIssue } from "../utilities/project";
 
 export class IssuePanel {
   public static currentPanel: IssuePanel | undefined;
@@ -168,9 +169,12 @@ export class IssuePanel {
             })
             return;
           case "generate-pdf":
-            await generate_pdf(value.issues, true);
+            await generateSingleIssuePdf(value.issue);
             return;
-            
+          case "delete-issue":
+            vscode.commands.executeCommand("accessibility.closeIssuePanel");
+            await deleteIssue(value.issueUuid);
+            return;
         }
       },
       undefined,

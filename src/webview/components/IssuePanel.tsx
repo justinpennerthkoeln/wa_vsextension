@@ -13,7 +13,7 @@ const IssuePanel = () => {
   const [activeIssue, setActiveIssue] = React.useState<any | null>(null);
 
   const handlePdfGeneration = () => {
-    vscode.postMessage({ type: 'generate-pdf', value: { issues: activeIssue } });
+    vscode.postMessage({ type: 'generate-pdf', value: { issue: activeIssue } });
   };
 
   useEffect(() => {
@@ -49,10 +49,6 @@ const IssuePanel = () => {
     };
   }, [actions]);
 
-  useEffect(() => {
-    console.log(activeIssue);
-  }, [activeIssue]);
-
   return (
     <div id="issue-panel">
       {activeProject == null && 
@@ -69,7 +65,14 @@ const IssuePanel = () => {
             { isUserOwner !== null &&
               <Flag flag={(isUserOwner) ? "owner" : "member"}></Flag>
             }
-            <button id="delete-btn">Delete</button>
+            <button className="delete-btn"
+              onClick={
+                (e) => {
+                  e.preventDefault();
+                  vscode.postMessage({ type: 'delete-issue', value: { issueUuid: activeIssue.uuid } });
+                }
+              }
+            >Delete</button>
           </div>
           <p>Created: {buildDateFromString(activeProject.inserted_at)}</p>
           <p id="error-msg" hidden={true} className='warning'>You aren't allowed to delete this Project</p>
@@ -103,15 +106,26 @@ const IssuePanel = () => {
                     <div className="container issue" key={index}>
                       <div className="issue-content-header">
                         <h4>{match.heading}</h4>
-                        <h4>Line: {match.lineIndex}</h4>
+                        <h4>Line: {(match.lineIndex) ? match.lineIndex : "Could't get line Index"}</h4>
                       </div>
                       <pre>
                         {match.content}
                       </pre>
-                      <h4>Suggestion</h4>
-                      <pre>
-                        test
-                      </pre>
+                      <div className="issue-description">
+                        <h4>Description</h4>
+                        <p>{match.description}</p>
+                        <a href={match.url} target="_blank" rel="noreferrer">
+                          More info
+                        </a>
+                      </div>
+                      { (match.fixable) &&
+                        <div id="suggestion-content">
+                          <h4>Suggesstion</h4>
+                          <pre>
+                            {match.suggestion}
+                          </pre>
+                        </div>
+                      }
                     </div>
                   )
                 )}
