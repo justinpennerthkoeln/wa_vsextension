@@ -5,39 +5,58 @@ import { IssuePanel } from "./panels/IssuePanel";
 import { AuditSidebarProvider } from "./panels/AuditSidebarProvider";
 import { ProjectsSidebarProvider } from "./panels/ProjectsSidebarProvider";
 import { SettingsSidebarProvider } from "./panels/SettingsSidebarProvider";
-import doAudit from "./utilities/audit";
-import { AuditResults, Settings } from "./webview/utilities/types";
-import { evalSettings } from "./utilities/settings";
+import {doAudit} from "./utilities/audit";
+import { AuditResults } from "./webview/utilities/types";
 import { generateAuditPdf } from "./utilities/pdf_gen";
 
 export function activate(context: ExtensionContext) {
 
+  // Access settings from the configuration and add an event listener for changes
+  var config = vscode.workspace.getConfiguration('fairlyAccess');
+  var isEnabled = config.get<boolean>('enable');
+  var auditOnSave = config.get<boolean>('auditOnSave');
+  var markIssuesOnSave = config.get<boolean>('markIssuesOnSave');
+  var generatePdfOnSave = config.get<boolean>('generatePdfOnSave');
+
+  vscode.workspace.onDidChangeConfiguration((e) => {
+    if (e.affectsConfiguration('fairlyAccess.enable')) {
+      isEnabled = vscode.workspace.getConfiguration('fairlyAccess').get<boolean>('enable');
+    }
+    if (e.affectsConfiguration('fairlyAccess.auditOnSave')) {
+      auditOnSave = vscode.workspace.getConfiguration('fairlyAccess').get<boolean>('auditOnSave');
+    }
+    if (e.affectsConfiguration('fairlyAccess.markIssuesOnSave')) {
+      markIssuesOnSave = vscode.workspace.getConfiguration('fairlyAccess').get<boolean>('markIssuesOnSave');
+    }
+    if (e.affectsConfiguration('fairlyAccess.generatePdfOnSave')) {
+      generatePdfOnSave = vscode.workspace.getConfiguration('fairlyAccess').get<boolean>('generatePdfOnSave');
+    }
+  });
+
   // Register commands
-  const showProjectsPanel = commands.registerCommand("accessibility.openProjectPanel", () => {
+  const showProjectsPanel = commands.registerCommand("fairlyAccess.openProjectPanel", () => {
     ProjectsPanel.render(context.extensionUri, context);
   });
-  const closeProjectsPanel = commands.registerCommand("accessibility.closeProjectPanel", () => {
+  const closeProjectsPanel = commands.registerCommand("fairlyAccess.closeProjectPanel", () => {
     ProjectsPanel.currentPanel?.dispose();
   });
 
-  const showIssuePanel = commands.registerCommand("accessibility.openIssuePanel", () => {
+  const showIssuePanel = commands.registerCommand("fairlyAccess.openIssuePanel", () => {
     IssuePanel.render(context.extensionUri, context);
   });
-  const closeIssuePanel = commands.registerCommand("accessibility.closeIssuePanel", () => {
+  const closeIssuePanel = commands.registerCommand("fairlyAccess.closeIssuePanel", () => {
     IssuePanel.currentPanel?.dispose();
   });
 
-  const audit = commands.registerCommand("accessibility.audit", async () => {
-    doCommandAudit();
+  const auditCommand = commands.registerCommand("fairlyAccess.audit", async () => {
+    await doAudit(markIssuesOnSave as boolean);
   });
 
+  // Register the onDidSaveTextDocument event to trigger the audit on save
   vscode.workspace.onDidSaveTextDocument(async (document) => {
-    const settings: Settings = context.globalState.get("settings") as Settings;
-    const isAuditEnabledOnSave = evalSettings(settings, "auto-audit");
-    const isPdfEnabledOnSave = evalSettings(settings, "auto-pdf");
-		if (isAuditEnabledOnSave && document.fileName.includes("html")) {
-      const auditResults: AuditResults = await doAudit(settings);
-      if (isPdfEnabledOnSave) {
+		if (auditOnSave && document.fileName.includes("html")) {
+      const auditResults: AuditResults = await doAudit(markIssuesOnSave as boolean);
+      if (generatePdfOnSave) {
         var issue = [
           {
             filename: vscode.window.activeTextEditor?.document.fileName.split('/').pop(),
@@ -56,7 +75,7 @@ export function activate(context: ExtensionContext) {
   const projectsSidebarProvider = new ProjectsSidebarProvider(context.extensionUri, context);
   const settingsSidebarProvider = new SettingsSidebarProvider(context.extensionUri, context);
 
-  context.subscriptions.push(audit);
+  context.subscriptions.push(auditCommand);
 
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider("vstodo-sidebar", auditSidebarProvider));
   context.subscriptions.push(vscode.window.registerWebviewViewProvider("vstodo-sidebar2", projectsSidebarProvider));
@@ -66,7 +85,3 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(closeProjectsPanel);
   context.subscriptions.push(closeIssuePanel);
 }
-function doCommandAudit() {
-  throw new Error("Function not implemented.");
-}
-

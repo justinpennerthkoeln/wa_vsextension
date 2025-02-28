@@ -3,29 +3,62 @@
   "private": true,
   "version": "0.0.0",
   "type": "commonjs",
-  "displayName": "hello-world-react-vite",
+  "displayName": "fairlyAccess",
   "description": "A hello world sample extension to demonstrate using React + Vite with the Webview UI Toolkit for VS Code.",
   "engines": {
     "vscode": "^1.75.0"
   },
   "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "fairlyAccess",
+      "properties": {
+        "fairlyAccess.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/Disable fairlyAccess"
+        },
+        "fairlyAccess.auditOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Audit current file on save"
+        },
+        "fairlyAccess.markIssuesOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Generate PDF on save"
+        },
+        "fairlyAccess.generatePdfOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Generate PDF on save"
+        }
+      }
+    },
     "commands": [
       {
-        "command": "accessibility.openProjectPanel",
+        "command": "fairlyAccess.openProjectPanel",
         "title": "Project Panel"
       },
       {
-        "command": "accessibility.openIssuePanel",
+        "command": "fairlyAccess.openIssuePanel",
         "title": "Issue Panel"
       },
       {
-        "command": "accessibility.closeProjectPanel",
+        "command": "fairlyAccess.closeProjectPanel",
         "title": "Close Project Panel"
       },
       {
-        "command": "accessibility.closeIssuePanel",
+        "command": "fairlyAccess.closeIssuePanel",
         "title": "close Issue Panel"
+      },
+      {
+        "command": "fairlyAccess.audit",
+        "title": "Audit Current File"
       }
     ],
     "viewsContainers": {

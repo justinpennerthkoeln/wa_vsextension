@@ -1,33 +1,18 @@
 import * as vscode from 'vscode';
 import { AuditResults, Settings } from '../webview/utilities/types';
-import { evalSettings } from './settings';
 
-const auditDiagnosticCollection = vscode.languages.createDiagnosticCollection('poc-ba');
+const auditDiagnosticCollection = vscode.languages.createDiagnosticCollection('fairlyAccess-audit');
 
-async function doAudit(settings: Settings) {
-    auditDiagnosticCollection.clear();
-	const shouldMarkIssueLines = evalSettings(settings, "auto-mark");
-    const document = vscode.window.activeTextEditor?.document;
-    if(document && document.fileName.includes("html")) {
-        return pocAudit(document.getText()).then((data) => {
-			if(shouldMarkIssueLines) {
-				markIssueLines(data, document, auditDiagnosticCollection);
-			}
-            return data;
-        })
-    } else {
-		return {success: false};
-	}
-}
-
-async function doCommandAudit() {
+export async function doAudit(markIssuesOnSave: boolean) {
     auditDiagnosticCollection.clear();
     const document = vscode.window.activeTextEditor?.document;
     if(document && document.fileName.includes("html")) {
         return pocAudit(document.getText()).then((data) => {
-				markIssueLines(data, document, auditDiagnosticCollection);
-            return data;
-        })
+						if(markIssuesOnSave) {
+							markIssueLines(data, document, auditDiagnosticCollection);
+						}
+						return data;
+					})
     } else {
 		return {success: false};
 	}
@@ -65,13 +50,12 @@ function markIssueLines(data: AuditResults, document: vscode.TextDocument, audit
 			const linesCount = match.content.split(/\r\n|\r|\n/).length;
 	
 			if(linesCount > 1) {
-				const startLine = match.content.split("\n")[0].replace(/ data-audit-error="[^"]*?"/g, "");
-				const start = new vscode.Position(line, (range.end.character - (startLine.length - 1)));
+				const start = new vscode.Position(line, (range.end.character - (match.content.split("\n")[0].length-1)));
 				const end = new vscode.Position(line, range.end.character);
 				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, end), match.heading, vscode.DiagnosticSeverity.Warning);
 				diagnostics.push(diagnostic);
 			} else {
-				const start = new vscode.Position(line, (range.end.character - ((match.content.replace(/ data-audit-error="[^"]*?"/g, "")).length)));
+				const start = new vscode.Position(line, (range.end.character - (match.content.length)));
 				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, range.end), match.heading, vscode.DiagnosticSeverity.Warning);
 				diagnostics.push(diagnostic);
 			}

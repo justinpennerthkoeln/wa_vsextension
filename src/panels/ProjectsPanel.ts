@@ -161,8 +161,8 @@ export class ProjectsPanel {
             await this._extensionContext.globalState.update("activeIssue", value.activeIssue);
             return;
           case "open-issue":
-            vscode.commands.executeCommand("accessibility.closeIssuePanel");
-            vscode.commands.executeCommand("accessibility.openIssuePanel");
+            vscode.commands.executeCommand("fairlyAccess.closeIssuePanel");
+            vscode.commands.executeCommand("fairlyAccess.openIssuePanel");
             return;
           case "get-users":
             var users = await getUsers(value.filter);
@@ -177,8 +177,8 @@ export class ProjectsPanel {
           case "delete-project":
             const isDeleted = await deleteProject(value.project_uuid);
             if (isDeleted) {
-              vscode.commands.executeCommand("accessibility.closeIssuePanel");
-              vscode.commands.executeCommand("accessibility.closeProjectPanel");
+              vscode.commands.executeCommand("fairlyAccess.closeIssuePanel");
+              vscode.commands.executeCommand("fairlyAccess.closeProjectPanel");
               return;
             }
             webview.postMessage({

@@ -172,7 +172,7 @@ export class IssuePanel {
             await generateSingleIssuePdf(value.issue);
             return;
           case "delete-issue":
-            vscode.commands.executeCommand("accessibility.closeIssuePanel");
+            vscode.commands.executeCommand("fairlyAccess.closeIssuePanel");
             await deleteIssue(value.issueUuid);
             return;
         }

@@ -29,11 +29,11 @@ const SeetingsSidebar = () => {
     e.preventDefault();
     vscode.postMessage({ type: 'save-settings', 
       value: [
-        { 
-          checked: (document.getElementById('auto-audit') as HTMLInputElement).checked,
-          name: 'Run Audit on page Save',
-          identifier: 'auto-audit'
-        },
+        // { 
+        //   checked: (document.getElementById('auto-audit') as HTMLInputElement).checked,
+        //   name: 'Run Audit on page Save',
+        //   identifier: 'auto-audit'
+        // },
         {
           checked: (document.getElementById('auto-pdf') as HTMLInputElement).checked,
           name: 'Generate PDF on page Save',
@@ -78,9 +78,9 @@ const SeetingsSidebar = () => {
         }
         setSettings(
           [
-            { checked: false, name: 'Run Audit on page Save', identifier: 'auto-audit' },
-            { checked: false, name: 'Generate PDF on page Save', identifier: 'auto-pdf' },
-            { checked: false, name: 'Mark issues in code on page Save', identifier: 'auto-mark' }
+            // { checked: false, name: 'Run Audit on page Save', identifier: 'auto-audit' },
+            { checked: true, name: 'Mark issues in code on page Save', identifier: 'auto-mark' },
+            { checked: false, name: 'Generate PDF on page Save', identifier: 'auto-pdf' }
           ]
         );
       }
@@ -126,7 +126,7 @@ const SeetingsSidebar = () => {
           <h3>Welcome, {user.username}</h3>
           <button onClick={handleLogout}>Logout</button>
 
-          <h3>Your Settings</h3>
+          {/* <h3>Your Settings</h3>
           <form action="" id="settings-form" onSubmit={
             (e) => {
               e.preventDefault();
@@ -144,7 +144,7 @@ const SeetingsSidebar = () => {
                 );
               })}
             <button type="submit">Save</button>
-          </form>
+          </form> */}
         </>
       }
 

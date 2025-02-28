@@ -41,6 +41,7 @@ export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
         case "logout": {
           await this._extensionContext.globalState.update("user", undefined);
           await this._extensionContext.globalState.update("settings", undefined);
+          await this.revive(webviewView);
           break;
         }
         case "get-user": {

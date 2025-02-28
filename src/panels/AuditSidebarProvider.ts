@@ -30,8 +30,7 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "audit": {
-          const settings = await this._extensionContext.globalState.get("settings", data.activeProject);
-          const auditResults: AuditResults = await doAudit(await settings);
+          const auditResults: AuditResults = await doAudit(vscode.workspace.getConfiguration('fairlyAccess').get('markIssuesOnSave') as boolean);
           webviewView.webview.postMessage({
             type: "auditResults",
             value: auditResults,
