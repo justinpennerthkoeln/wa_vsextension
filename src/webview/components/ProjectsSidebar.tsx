@@ -27,7 +27,10 @@ const ProjectsSidebar = () => {
           actions.setUserToken(message.value.user.uuid);
           vscode.postMessage({ type: 'get-projects', userToken: message.value.user.uuid });
           return;
-        }
+        } else {
+          actions.setUserToken(null);
+          return;
+        } 
       }
       if (message.type === 'project-created') {
         if(message.value.success === false) {
@@ -40,7 +43,7 @@ const ProjectsSidebar = () => {
       }
       if(message.type === 'get-projects') {
         if(message.value.length == 0) {
-          actions.setUserProjects(null);
+          actions.setUserProjects([]);
           return;
         }
         actions.setUserProjects(message.value);
@@ -88,8 +91,14 @@ const ProjectsSidebar = () => {
 
 
           <h2>Your Projects</h2>
+          {userProjects && userProjects.length == 0 &&
+            <p>No projects found</p>
+          }
+
           {userProjects === null ? (
-            <LoadingCircle />
+            <>
+              <LoadingCircle />            
+            </>
           ) : (
             <>
               {userProjects.map((project) => (

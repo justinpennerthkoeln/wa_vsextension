@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import * as dotenv from "dotenv";
 import { login } from "../utilities/user";
+import { onLoginInAuditSidebar, onLoginInProjectsSidebar, onLogoutInAuditSidebar, onLogoutInProjectsSidebar } from "../utilities/events";
 
 dotenv.config();
 export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
@@ -36,12 +37,18 @@ export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
             type: "login",
             value: { success: true, user },
           });
+          onLoginInAuditSidebar.fire();
+          onLoginInProjectsSidebar.fire();
           break;
         }
         case "logout": {
           await this._extensionContext.globalState.update("user", undefined);
           await this._extensionContext.globalState.update("settings", undefined);
+          await this._extensionContext.globalState.update("activeProject", undefined);
+          await this._extensionContext.globalState.update("activeIssue", undefined);
           await this.revive(webviewView);
+          onLogoutInAuditSidebar.fire();
+          onLogoutInProjectsSidebar.fire();
           break;
         }
         case "get-user": {

@@ -43,6 +43,9 @@ const AuditSidebar = () => {
           actions.setUserToken(message.value.user.uuid);
           vscode.postMessage({ type: 'get-projects', userToken: message.value.user.uuid });
           return;
+        } else {
+          actions.setUserToken(null);
+          return;
         }
       }
       if(message.type === 'auditResults') {
@@ -120,6 +123,10 @@ const AuditSidebar = () => {
 
               { userToken == null &&
                 <p className='warning'>Log in to use Projects-Feature</p>
+              }
+              {
+                userToken != null && userProjects == null &&
+                <p className='warning'>No Projects found. Create one in Projects Panel</p>
               }
               { userProjects &&
                 <>

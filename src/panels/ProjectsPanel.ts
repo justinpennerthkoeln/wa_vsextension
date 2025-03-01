@@ -2,9 +2,9 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vsco
 import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
 
-import { addUser, deleteUser, deleteProject } from "../utilities/project";
+import { addUser, deleteUser, deleteProject, getProjects } from "../utilities/project";
 import { getUsers } from "../utilities/user";
-import { onRefreshProjects } from '../utilities/events';
+import { onRefreshProjectsInAuditSidebar, onRefreshProjectsInProjectsSidebar } from '../utilities/events';
 import { Member, Project, User } from "../webview/utilities/types";
 import { generateProjectPdf } from "../utilities/pdf_gen";
 
@@ -33,11 +33,23 @@ export class ProjectsPanel {
     this._setWebviewMessageListener(this._panel.webview);
 
     // Listen for the custom event to refresh projects
-    onRefreshProjects.event(() => {
-      this._panel.webview.postMessage({
-        type: "refresh-projects",
-      });
-    });
+    // onRefreshProjects.event(async () => {
+    //   const user: User | undefined = await (this._extensionContext.globalState.get("user") as {success: boolean, user: User}).user;
+    //   const userToken = user?.uuid;
+    //   if (userToken) {
+    //     const projects = await getProjects(userToken);
+    //     const current_project = await this._extensionContext.globalState.get("activeProject");
+    //     if(current_project) {
+    //       projects.forEach((project: Project) => {
+    //         if(project.uuid === (current_project as Project).uuid) {
+    //           this._extensionContext.globalState.update("activeProject", project);
+    //           vscode.commands.executeCommand("fairlyAccess.closeProjectPanel");
+    //           vscode.commands.executeCommand("fairlyAccess.openProjectPanel");
+    //         }
+    //       });
+    //     }
+    //   }
+    // });
   }
 
   public static render(extensionUri: Uri, extensionContext: vscode.ExtensionContext) {
@@ -177,8 +189,8 @@ export class ProjectsPanel {
           case "delete-project":
             const isDeleted = await deleteProject(value.project_uuid);
             if (isDeleted) {
-              vscode.commands.executeCommand("fairlyAccess.closeIssuePanel");
-              vscode.commands.executeCommand("fairlyAccess.closeProjectPanel");
+              onRefreshProjectsInProjectsSidebar.fire();
+              onRefreshProjectsInAuditSidebar.fire();
               return;
             }
             webview.postMessage({
