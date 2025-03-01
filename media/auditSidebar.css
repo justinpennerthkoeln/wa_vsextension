@@ -53,3 +53,7 @@ button {
     padding: var(--space-sm);
     border-radius: var(--border-radius);
 }
+
+#audit-results-sidebar {
+    margin-bottom: var(--space-lg);
+}

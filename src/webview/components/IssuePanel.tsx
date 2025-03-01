@@ -11,6 +11,7 @@ const IssuePanel = () => {
   const { activeProject, actions } = useApp();
   const [isUserOwner, setIsUserOwner] = React.useState<boolean | null>(null);
   const [activeIssue, setActiveIssue] = React.useState<any | null>(null);
+  const [pressedDeleteBtn, setPressedDeleteBtn] = React.useState<boolean>(false);
 
   const handlePdfGeneration = () => {
     vscode.postMessage({ type: 'generate-pdf', value: { issue: activeIssue } });
@@ -65,14 +66,24 @@ const IssuePanel = () => {
             { isUserOwner !== null &&
               <Flag flag={(isUserOwner) ? "owner" : "member"}></Flag>
             }
-            <button className="delete-btn"
-              onClick={
-                (e) => {
-                  e.preventDefault();
-                  vscode.postMessage({ type: 'delete-issue', value: { issueUuid: activeIssue.uuid } });
-                }
-              }
-            >Delete</button>
+            { pressedDeleteBtn ? (
+                <div className="pull-right">
+                  <LoadingCircle/>
+                </div>
+              ) : (
+                <button className="delete-btn"
+                    onClick={
+                      (e) => {
+                        e.preventDefault();
+                        vscode.postMessage({ type: 'delete-issue', value: { issueUuid: activeIssue.uuid } });
+                        setPressedDeleteBtn(true);
+                      }
+                    }
+                  >
+                    Delete
+                </button>
+              )
+            }
           </div>
           <p>Created: {buildDateFromString(activeProject.inserted_at)}</p>
           <p id="error-msg" hidden={true} className='warning'>You aren't allowed to delete this Project</p>

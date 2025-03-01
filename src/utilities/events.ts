@@ -11,4 +11,4 @@ export const onLogoutInProjectsSidebar = new vscode.EventEmitter<void>();
 export const onLoginInProjectsSidebar = new vscode.EventEmitter<void>();
 
 // Projects Panel
-export const onUpdateIssuesInProjectsPanel = new vscode.EventEmitter<void>();
+export const onReloadActiveProjectInProjectsPanel = new vscode.EventEmitter<void>();

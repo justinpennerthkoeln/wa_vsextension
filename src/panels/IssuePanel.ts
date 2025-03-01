@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import { Member, Project, User } from "../webview/utilities/types";
 import { generateSingleIssuePdf } from "../utilities/pdf_gen";
 import { deleteIssue } from "../utilities/project";
+import { onRefreshProjectsInProjectsSidebar, onReloadActiveProjectInProjectsPanel } from "../utilities/events";
 
 export class IssuePanel {
   public static currentPanel: IssuePanel | undefined;
@@ -172,8 +173,12 @@ export class IssuePanel {
             await generateSingleIssuePdf(value.issue);
             return;
           case "delete-issue":
-            vscode.commands.executeCommand("fairlyAccess.closeIssuePanel");
             await deleteIssue(value.issueUuid);
+            onRefreshProjectsInProjectsSidebar.fire();
+            onReloadActiveProjectInProjectsPanel.fire();
+            setTimeout(() => {
+              vscode.commands.executeCommand("fairlyAccess.closeIssuePanel");
+            }, 1000);
             return;
         }
       },

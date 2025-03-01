@@ -3,7 +3,7 @@ import { getNonce } from "../utilities/getNonce";
 import doAudit from "../utilities/audit";
 import { getProjects, addIssue} from "../utilities/project";
 import { generateAuditPdf } from "../utilities/pdf_gen";
-import { onLoginInAuditSidebar, onLogoutInAuditSidebar, onRefreshProjectsInAuditSidebar } from '../utilities/events';
+import { onLoginInAuditSidebar, onLogoutInAuditSidebar, onRefreshProjectsInAuditSidebar, onRefreshProjectsInProjectsSidebar, onReloadActiveProjectInProjectsPanel } from '../utilities/events';
 import { AuditResults, Settings, User } from "../webview/utilities/types";
 
 export class AuditSidebarProvider implements vscode.WebviewViewProvider {
@@ -66,7 +66,8 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
             type: "add-issue",
             value: { success: issueAdded },
           });
-          // onRefreshProjects.fire();
+          onRefreshProjectsInProjectsSidebar.fire();
+          onReloadActiveProjectInProjectsPanel.fire();
           break;
         }
         case "generate-pdf": {

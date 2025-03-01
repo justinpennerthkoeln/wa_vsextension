@@ -4,7 +4,7 @@ import * as vscode from "vscode";
 
 import { addUser, deleteUser, deleteProject, getProjects } from "../utilities/project";
 import { getUsers } from "../utilities/user";
-import { onRefreshProjectsInAuditSidebar, onRefreshProjectsInProjectsSidebar } from '../utilities/events';
+import { onRefreshProjectsInAuditSidebar, onRefreshProjectsInProjectsSidebar, onReloadActiveProjectInProjectsPanel } from '../utilities/events';
 import { Member, Project, User } from "../webview/utilities/types";
 import { generateProjectPdf } from "../utilities/pdf_gen";
 
@@ -50,6 +50,24 @@ export class ProjectsPanel {
     //     }
     //   }
     // });
+
+    onReloadActiveProjectInProjectsPanel.event(async () => {
+      const activeProject = await this._extensionContext.globalState.get("activeProject");
+      const user: User | undefined = await (this._extensionContext.globalState.get("user") as {success: boolean, user: User}).user;
+      const userToken = user?.uuid;
+      if(userToken) {
+        const uuid = (activeProject as Project).uuid;
+        if(uuid) {
+          const projects = await getProjects(userToken);
+          projects.forEach((project: Project) => {
+            if(project.uuid === uuid) {
+              this._extensionContext.globalState.update("activeProject", project);
+            }
+          });
+        }
+      }
+      
+    });
   }
 
   public static render(extensionUri: Uri, extensionContext: vscode.ExtensionContext) {
@@ -189,6 +207,7 @@ export class ProjectsPanel {
           case "delete-project":
             const isDeleted = await deleteProject(value.project_uuid);
             if (isDeleted) {
+              vscode.commands.executeCommand("fairlyAccess.closeProjectPanel");
               onRefreshProjectsInProjectsSidebar.fire();
               onRefreshProjectsInAuditSidebar.fire();
               return;

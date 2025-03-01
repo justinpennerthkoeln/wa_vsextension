@@ -77,6 +77,12 @@ button {
 #issue-panel-header div button:last-child {
   margin-left: auto;
 }
+
+#issue-panel-header div .pull-right {
+  margin-left: auto;
+  margin-right: 0;
+}
+
 /************************************************************
  Issues Panel Content */
 

@@ -121,9 +121,9 @@ const SeetingsSidebar = () => {
         </>
       }
       
-      {isLoggedIn && user && settings &&
+      {isLoggedIn && user &&
         <>
-          <h3>Welcome, {user.username}</h3>
+          <h3>Welcome {user.username}</h3>
           <button onClick={handleLogout}>Logout</button>
 
           {/* <h3>Your Settings</h3>

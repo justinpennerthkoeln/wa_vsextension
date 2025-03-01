@@ -11,6 +11,7 @@ h3 {
   margin-top: var(--space-lg);
   display: flex;
   flex-direction: column;
+  margin-bottom: var(--space-lg);
 }
 
 .project-sidebar-item {

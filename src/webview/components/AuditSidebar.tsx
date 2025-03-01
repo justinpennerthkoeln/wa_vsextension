@@ -131,7 +131,7 @@ const AuditSidebar = () => {
               { userProjects &&
                 <>
                   <h3>Add Issue to Project</h3>
-                  <form action="" onSubmit={handleAddIssue} >
+                  <form action="" onSubmit={handleAddIssue} id="add-issue-form">
                     <select name="" id="add-issue">
                       {
                         userProjects.map((project: Project, index: number) => (
