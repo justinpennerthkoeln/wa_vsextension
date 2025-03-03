@@ -20,7 +20,7 @@ export async function doAudit(markIssuesOnSave: boolean) {
 
 function pocAudit(filecontent: string): Promise<any> {
 
-	const test: Promise<any> = fetch('http://localhost:4000/v1/audit', {
+	const test: Promise<any> = fetch('http://192.168.178.52:4000/v1/audit', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -52,11 +52,11 @@ function markIssueLines(data: AuditResults, document: vscode.TextDocument, audit
 			if(linesCount > 1) {
 				const start = new vscode.Position(line, (range.end.character - (match.content.split("\n")[0].length-1)));
 				const end = new vscode.Position(line, range.end.character);
-				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, end), match.heading, vscode.DiagnosticSeverity.Warning);
+				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, end), (match.suggestion) ? match.heading + "\n\n" +  match.suggestion : match.heading , vscode.DiagnosticSeverity.Warning);
 				diagnostics.push(diagnostic);
 			} else {
 				const start = new vscode.Position(line, (range.end.character - (match.content.length)));
-				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, range.end), match.heading, vscode.DiagnosticSeverity.Warning);
+				const diagnostic = new vscode.Diagnostic(new vscode.Range(start, range.end), (match.suggestion) ? match.heading + "\n\n" +  match.suggestion : match.heading , vscode.DiagnosticSeverity.Warning);
 				diagnostics.push(diagnostic);
 			}
 		}
