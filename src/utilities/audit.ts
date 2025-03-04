@@ -20,7 +20,7 @@ export async function doAudit(markIssuesOnSave: boolean) {
 
 function pocAudit(filecontent: string): Promise<any> {
 
-	const test: Promise<any> = fetch('http://192.168.178.52:4000/v1/audit', {
+	const test: Promise<any> = fetch('http://217.154.70.96:4000/v1/audit', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',

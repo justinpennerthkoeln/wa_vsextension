@@ -86,7 +86,7 @@ export class SettingsSidebarProvider implements vscode.WebviewViewProvider {
           break;
         }
         case "register": {
-          vscode.env.openExternal(vscode.Uri.parse(`http://192.168.178.52:4000/register`));
+          vscode.env.openExternal(vscode.Uri.parse(`http://217.154.70.96:4000/register`));
           break;
         }
       }

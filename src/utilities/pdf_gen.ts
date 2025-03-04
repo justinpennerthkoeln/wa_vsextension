@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 
 export async function generateSingleIssuePdf(issue: any) {
     try {
-        await fetch('http://192.168.178.52:4000/v1/pdf/gen_single_issue/', {
+        await fetch('http://217.154.70.96:4000/v1/pdf/gen_single_issue/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -12,7 +12,7 @@ export async function generateSingleIssuePdf(issue: any) {
             return response.json()
         }).then(data => {
             // Open the PDF in the default PDF viewer
-            vscode.env.openExternal(vscode.Uri.parse("http://192.168.178.52:4000/v1/pdf/" + data.pdf_path));
+            vscode.env.openExternal(vscode.Uri.parse("http://217.154.70.96:4000/v1/pdf/" + data.pdf_path));
         });
     } catch (error) {
         throw new Error('Failed to generate PDF');
@@ -22,7 +22,7 @@ export async function generateSingleIssuePdf(issue: any) {
 
 export async function generateProjectPdf(issues: any, project: any) {
     try {
-        await fetch('http://192.168.178.52:4000/v1/pdf/gen_project/', {
+        await fetch('http://217.154.70.96:4000/v1/pdf/gen_project/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -32,7 +32,7 @@ export async function generateProjectPdf(issues: any, project: any) {
             return response.json()
         }).then(data => {
             // Open the PDF in the default PDF viewer
-            vscode.env.openExternal(vscode.Uri.parse("http://192.168.178.52:4000/v1/pdf/" + data.pdf_path));
+            vscode.env.openExternal(vscode.Uri.parse("http://217.154.70.96:4000/v1/pdf/" + data.pdf_path));
         });
     } catch (error) {
         throw new Error('Failed to generate PDF');
@@ -41,7 +41,7 @@ export async function generateProjectPdf(issues: any, project: any) {
 
 export async function generateAuditPdf(issues: any) {
     try {
-        await fetch('http://192.168.178.52:4000/v1/pdf/gen_audit/', {
+        await fetch('http://217.154.70.96:4000/v1/pdf/gen_audit/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export async function generateAuditPdf(issues: any) {
             return response.json()
         }).then(data => {
             // Open the PDF in the default PDF viewer
-            vscode.env.openExternal(vscode.Uri.parse("http://192.168.178.52:4000/v1/pdf/" + data.pdf_path));
+            vscode.env.openExternal(vscode.Uri.parse("http://217.154.70.96:4000/v1/pdf/" + data.pdf_path));
         });
     } catch (error) {
         throw new Error('Failed to generate PDF');

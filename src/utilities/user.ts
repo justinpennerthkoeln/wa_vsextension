@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
 
 export async function login(loginData: { email: string, password: string }) {
-    return await fetch(`http://192.168.178.52:4000/auth?email=${loginData.email}&password=${loginData.password}`, {
+    const email = loginData.email;
+    const password = loginData.password;
+    return await fetch(`http://217.154.70.96:4000/auth?email=${email}&password=${password}`, {
         method: 'get',
         headers: {
             'Content-Type': 'application/json',
@@ -15,7 +17,7 @@ export async function login(loginData: { email: string, password: string }) {
 }
 
 export function getUsers(filter: string) {
-    return fetch(`http://192.168.178.52:4000/v1/users?filter=${filter}`, {
+    return fetch(`http://217.154.70.96:4000/v1/users?filter=${filter}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
