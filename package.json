@@ -30,7 +30,7 @@
         "fairlyAccess.markIssuesOnSave": {
           "type": "boolean",
           "default": true,
-          "description": "Generate PDF on save"
+          "description": "Mark Issues on Save"
         },
         "fairlyAccess.generatePdfOnSave": {
           "type": "boolean",

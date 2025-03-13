@@ -79,7 +79,7 @@ export function activate(context: ExtensionContext) {
 
 	context.subscriptions.push(vscode.window.registerWebviewViewProvider("vstodo-sidebar", auditSidebarProvider));
   context.subscriptions.push(vscode.window.registerWebviewViewProvider("vstodo-sidebar2", projectsSidebarProvider));
-  context.subscriptions.push(vscode.window.registerWebviewViewProvider("vstodo-sidebar3", settingsSidebarProvider))
+  context.subscriptions.push(vscode.window.registerWebviewViewProvider("vstodo-sidebar3", settingsSidebarProvider));
   context.subscriptions.push(showProjectsPanel);
   context.subscriptions.push(showIssuePanel);
   context.subscriptions.push(closeProjectsPanel);

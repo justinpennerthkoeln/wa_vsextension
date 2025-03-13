@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { AuditResults } from '../../src/webview/utilities/types';
 
 export function createProject(projectName: string, userToken: string) {
-    return fetch('http://217.154.70.96:4000/v1/projects/create', {
+    return fetch('http://217.154.85.189:4000/v1/projects/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export function createProject(projectName: string, userToken: string) {
 }
 
 export function getProjects(userToken: string) {
-    return fetch(`http://217.154.70.96:4000/v1/projects/all/${userToken}`, {
+    return fetch(`http://217.154.85.189:4000/v1/projects/all/${userToken}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ export function getProjects(userToken: string) {
 }
 
 export function getProject(projectUuid: string) {
-    return fetch(`http://217.154.70.96:4000/v1/projects/${projectUuid}`, {
+    return fetch(`http://217.154.85.189:4000/v1/projects/${projectUuid}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export function getProject(projectUuid: string) {
 }
 
 export function deleteProject(projectUuid: string) {
-    return fetch(`http://217.154.70.96:4000/v1/projects/${projectUuid}/delete`, {
+    return fetch(`http://217.154.85.189:4000/v1/projects/${projectUuid}/delete`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ export function deleteProject(projectUuid: string) {
 }
 
 export function addUser(projectUuid: string, userUuid: string) {
-    return fetch(`http://217.154.70.96:4000/v1/projects/${projectUuid}/add_member`, {
+    return fetch(`http://217.154.85.189:4000/v1/projects/${projectUuid}/add_member`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ export function addUser(projectUuid: string, userUuid: string) {
 }
 
 export function deleteUser(memberUuid: string) {
-    return fetch(`http://217.154.70.96:4000/v1/projects/${memberUuid}/delete_member`, {
+    return fetch(`http://217.154.85.189:4000/v1/projects/${memberUuid}/delete_member`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ export function addIssue(projectUuid: string, userToken: string, auditResults: A
         return false;
     }
 
-    return fetch(`http://217.154.70.96:4000/v1/projects/${projectUuid}/add_issue`, {
+    return fetch(`http://217.154.85.189:4000/v1/projects/${projectUuid}/add_issue`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export function addIssue(projectUuid: string, userToken: string, auditResults: A
 }
 
 export function deleteIssue(issueUuid: string) {
-    return fetch(`http://217.154.70.96:4000/v1/issues/${issueUuid}/delete`, {
+    return fetch(`http://217.154.85.189:4000/v1/issues/${issueUuid}/delete`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
