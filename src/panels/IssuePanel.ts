@@ -3,7 +3,7 @@ import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
 import { Member, Project, User } from "../webview/utilities/types";
 import { generateSingleIssuePdf } from "../utilities/pdf_gen";
-import { deleteIssue } from "../utilities/project";
+import { deleteIssue } from "../utilities/issues";
 import { onRefreshProjectsInProjectsSidebar, onReloadActiveProjectInProjectsPanel } from "../utilities/events";
 
 export class IssuePanel {
@@ -78,16 +78,16 @@ export class IssuePanel {
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "reset.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "reset.css")
     );
     const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "vscode.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "vscode.css")
     );
     const styleRootUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "root.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "root.css")
     );
     const styleIssuePanelUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "issuePanel.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "issuePanel.css")
     );
 
     const scriptUri = webview.asWebviewUri(

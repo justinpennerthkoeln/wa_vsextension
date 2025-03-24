@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useApp } from './Store';
-import '../../../media/auditSidebar.css';
+import '../../../public/css/auditSidebar.css';
 import { vscode } from '../utilities/vscode';
 import { Match, Project } from '../utilities/types';
 

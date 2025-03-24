@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useApp } from './Store';
-import '../../../media/issuePanel.css';
+import '../../../public/css/issuePanel.css';
 import { vscode } from '../utilities/vscode';
 import LoadingCircle from './LoadingCircle';
 import Flag from './Flag';

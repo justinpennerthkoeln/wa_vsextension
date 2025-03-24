@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from './Store';
 import { vscode } from '../utilities/vscode';
-import '../../../media/settingsSidebar.css';
+import '../../../public/css/settingsSidebar.css';
 import { User } from '../utilities/types';
 
 const SeetingsSidebar = () => {

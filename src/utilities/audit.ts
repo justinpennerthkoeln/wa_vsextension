@@ -7,7 +7,7 @@ export async function doAudit(markIssuesOnSave: boolean) {
     auditDiagnosticCollection.clear();
     const document = vscode.window.activeTextEditor?.document;
     if(document && document.fileName.includes("html")) {
-        return pocAudit(document.getText()).then((data) => {
+        return auditFile(document.getText()).then((data) => {
 						if(markIssuesOnSave) {
 							markIssueLines(data, document, auditDiagnosticCollection);
 						}
@@ -18,15 +18,14 @@ export async function doAudit(markIssuesOnSave: boolean) {
 	}
 }
 
-function pocAudit(filecontent: string): Promise<any> {
+function auditFile(filecontent: string): Promise<any> {
 
-	const test: Promise<any> = fetch('http://217.154.85.189:4000/v1/audit', {
+	const results: Promise<any> = fetch('http://217.154.85.189:4000/v1/audit', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
 		},
 		body: JSON.stringify({
-			api_key: "1e05121b-247f-485b-ab2e-94757a11ca97",
 			filecontent: filecontent
 		})
 	})
@@ -36,7 +35,7 @@ function pocAudit(filecontent: string): Promise<any> {
 		});
 	});
 
-	return test;
+	return results;
 }
 
 function markIssueLines(data: AuditResults, document: vscode.TextDocument, auditDiagnosticCollection: vscode.DiagnosticCollection) {

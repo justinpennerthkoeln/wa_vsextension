@@ -1,7 +1,8 @@
 import * as vscode from "vscode";
 import { getNonce } from "../utilities/getNonce";
 import doAudit from "../utilities/audit";
-import { getProjects, addIssue} from "../utilities/project";
+import { addIssue } from "../utilities/issues";
+import { getProjects } from "../utilities/project";
 import { generateAuditPdf } from "../utilities/pdf_gen";
 import { onLoginInAuditSidebar, onLogoutInAuditSidebar, onRefreshProjectsInAuditSidebar, onRefreshProjectsInProjectsSidebar, onReloadActiveProjectInProjectsPanel } from '../utilities/events';
 import { AuditResults, Settings, User } from "../webview/utilities/types";
@@ -163,20 +164,20 @@ export class AuditSidebarProvider implements vscode.WebviewViewProvider {
     const nonce = getNonce();
 
     const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "reset.css")
     );
     const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "vscode.css")
     );
     const styleRootUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "root.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "root.css")
     );
     const styleAuditSidebarUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "auditSidebar.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "auditSidebar.css")
     );
 
     const svgUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "fairlyAccess.svg")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "fairlyAccess.svg")
     );
 
     const scriptUri = webview.asWebviewUri(

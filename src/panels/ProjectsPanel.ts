@@ -2,7 +2,8 @@ import { Disposable, Webview, WebviewPanel, window, Uri, ViewColumn } from "vsco
 import { getNonce } from "../utilities/getNonce";
 import * as vscode from "vscode";
 
-import { addUser, deleteUser, deleteProject, getProjects } from "../utilities/project";
+import { addUser, deleteUser } from "../utilities/user";
+import { deleteProject, getProjects } from "../utilities/project";
 import { getUsers } from "../utilities/user";
 import { onRefreshProjectsInAuditSidebar, onRefreshProjectsInProjectsSidebar, onReloadActiveProjectInProjectsPanel } from '../utilities/events';
 import { Member, Project, User } from "../webview/utilities/types";
@@ -94,7 +95,7 @@ export class ProjectsPanel {
         }
       );
 
-      panel.iconPath = Uri.joinPath(extensionUri, "media", "fairlyAccess.svg");
+      panel.iconPath = Uri.joinPath(extensionUri, "public", "css", "fairlyAccess.svg");
 
       ProjectsPanel.currentPanel = new ProjectsPanel(panel, extensionUri, extensionContext);
     }
@@ -117,16 +118,16 @@ export class ProjectsPanel {
 
   private _getWebviewContent(webview: Webview, extensionUri: Uri) {
     const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "reset.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "reset.css")
     );
     const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "vscode.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "vscode.css")
     );
     const styleRootUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "root.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "root.css")
     );
     const styleProjectPanelUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(extensionUri, "media", "projectPanel.css")
+      vscode.Uri.joinPath(extensionUri, "public", "css", "projectPanel.css")
     );
 
     const scriptUri = webview.asWebviewUri(

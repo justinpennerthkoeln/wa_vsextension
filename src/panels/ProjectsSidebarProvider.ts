@@ -121,16 +121,16 @@ export class ProjectsSidebarProvider implements vscode.WebviewViewProvider {
     const nonce = getNonce();
 
     const styleResetUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "reset.css")
     );
     const styleVSCodeUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "vscode.css")
     );
     const styleRootUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "root.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "root.css")
     );
     const styleProjectsUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "projectSidebar.css")
+      vscode.Uri.joinPath(this._extensionUri, "public", "css", "projectSidebar.css")
     );
 
     const scriptUri = webview.asWebviewUri(

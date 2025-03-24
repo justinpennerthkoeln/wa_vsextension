@@ -1,6 +1,6 @@
 import React, { use, useEffect, useState, useRef } from 'react';
 import { useApp } from './Store';
-import '../../../media/projectPanel.css';
+import '../../../public/css/projectPanel.css';
 import { vscode } from '../utilities/vscode';
 import { Issue, Member } from '../utilities/types';
 import { buildDateFromString } from '../../utilities/buildDateFromString';
